@@ -1,0 +1,4 @@
+interface:
+  display_name: "bg-elasticsearch"
+  short_description: "Resolve customer and site names into the right Elasticsearch cluster and alias"
+  default_prompt: "Given a customer and site name, resolve the Vault cluster name, connect to the Elasticsearch .es. endpoint, and locate the matching log-records alias or index."

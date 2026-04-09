@@ -1,0 +1,42 @@
+0 verbose cli /home/ezekiel.flaton@berkshiregrey.com/.nvm/versions/node/v24.14.0/bin/node /home/ezekiel.flaton@berkshiregrey.com/.nvm/versions/node/v24.14.0/bin/npm
+1 info using npm@11.9.0
+2 info using node@v24.14.0
+3 silly config load:file:/home/ezekiel.flaton@berkshiregrey.com/.nvm/versions/node/v24.14.0/lib/node_modules/npm/npmrc
+4 silly config load:file:/home/ezekiel.flaton@berkshiregrey.com/.codex/skills/electron-app-driver/.npmrc
+5 silly config load:file:/home/ezekiel.flaton@berkshiregrey.com/.npmrc
+6 silly config load:file:/home/ezekiel.flaton@berkshiregrey.com/.nvm/versions/node/v24.14.0/etc/npmrc
+7 verbose title npm ci
+8 verbose argv "ci"
+9 verbose logfile logs-max:10 dir:/home/ezekiel.flaton@berkshiregrey.com/.codex/skills/electron-app-driver/.npm-cache/_logs/2026-04-06T18_05_30_441Z-
+10 verbose logfile /home/ezekiel.flaton@berkshiregrey.com/.codex/skills/electron-app-driver/.npm-cache/_logs/2026-04-06T18_05_30_441Z-debug-0.log
+11 silly logfile done cleaning log files
+12 silly packumentCache heap:4496293888 maxSize:1124073472 maxEntrySize:562036736
+13 silly idealTree buildDeps
+14 silly reify moves {}
+15 silly audit bulk request {
+15 silly audit   fsevents: [ '2.3.2' ],
+15 silly audit   playwright: [ '1.58.2' ],
+15 silly audit   'playwright-core': [ '1.58.2' ]
+15 silly audit }
+16 http cache playwright-core@https://registry.npmjs.org/playwright-core/-/playwright-core-1.58.2.tgz 0ms (cache hit)
+17 http cache playwright@https://registry.npmjs.org/playwright/-/playwright-1.58.2.tgz 0ms (cache hit)
+18 silly tarball no local data for playwright-core@https://registry.npmjs.org/playwright-core/-/playwright-core-1.58.2.tgz. Extracting by manifest.
+19 silly tarball no local data for playwright@https://registry.npmjs.org/playwright/-/playwright-1.58.2.tgz. Extracting by manifest.
+20 http fetch GET 200 https://registry.npmjs.org/npm 187ms
+21 http fetch POST 200 https://registry.npmjs.org/-/npm/v1/security/advisories/bulk 183ms
+22 silly audit report {}
+23 http fetch GET 200 https://registry.npmjs.org/playwright/-/playwright-1.58.2.tgz 208ms (cache miss)
+24 http fetch GET 200 https://registry.npmjs.org/playwright-core/-/playwright-core-1.58.2.tgz 333ms (cache miss)
+25 silly ADD node_modules/playwright-core
+26 silly ADD node_modules/playwright
+27 verbose cwd /home/ezekiel.flaton@berkshiregrey.com/.codex/skills/electron-app-driver
+28 verbose os Linux 6.17.0-20-generic
+29 verbose node v24.14.0
+30 verbose npm  v11.9.0
+31 notice
+31 notice New [33mminor[39m version of npm available! [33m11.9.0[39m -> [34m11.12.1[39m
+31 notice Changelog: [34mhttps://github.com/npm/cli/releases/tag/v11.12.1[39m
+31 notice To update run: [4mnpm install -g npm@11.12.1[24m
+31 notice  { force: true, Symbol(proc-log.meta): true }
+32 verbose exit 0
+33 info ok

@@ -1,0 +1,13 @@
+prefix_rule(pattern=["/usr/bin/date"], decision="allow")
+prefix_rule(pattern=["/usr/bin/docker", "exec"], decision="allow")
+prefix_rule(pattern=["/usr/bin/docker", "inspect"], decision="allow")
+prefix_rule(pattern=["/usr/bin/find"], decision="allow")
+prefix_rule(pattern=["/usr/bin/sort"], decision="allow")
+prefix_rule(pattern=["/usr/bin/ps", "-ef"], decision="allow")
+prefix_rule(pattern=["/usr/bin/docker", "ps"], decision="allow")
+prefix_rule(pattern=["/usr/bin/bash", "-n"], decision="allow")
+prefix_rule(pattern=["/bin/bash", "/home/ezekiel.flaton@berkshiregrey.com/.codex/skills/bg-elasticsearch/scripts/run_bg_vault_elastic_python.sh"], decision="allow")
+
+prefix_rule(pattern=["/home/ezekiel.flaton@berkshiregrey.com/.codex/skills/vrr-ticket-authoring/scripts/extract_box_vrr_to_file.sh"], decision="allow")
+prefix_rule(pattern=["/home/ezekiel.flaton@berkshiregrey.com/.codex/skills/vrr-ticket-authoring/scripts/update_box_vrr_status.sh"], decision="allow")
+

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agent Notes"
+  short_description: "Local CLI for Agent Notes project and note CRUD plus health checks."
+  default_prompt: "Use the Agent Notes CLI wrapper to check service health and list, create, update, or delete Agent Notes projects and notes."

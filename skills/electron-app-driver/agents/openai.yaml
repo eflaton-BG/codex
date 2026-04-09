@@ -1,0 +1,4 @@
+interface:
+  display_name: "Electron App Driver"
+  short_description: "Drive local Electron apps with Playwright UI scenarios."
+  default_prompt: "Use $electron-app-driver to run a local Electron UI scenario, inspect state, or capture screenshots."

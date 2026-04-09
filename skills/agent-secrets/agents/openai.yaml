@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agent Secrets"
+  short_description: "Ubuntu keyring-backed field and OAuth credential profiles with safe inspect and use."
+  default_prompt: "Use agent-secrets to list/get/run keyring-backed credentials. For field profiles, use private/public selectors. For OAuth-backed profiles with empty fields, inspect via get and use root selectors such as oauth_state.access_token with run --env."

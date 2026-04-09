@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agent Tasks"
+  short_description: "Inspect and update the local Agent Tasks tree, steps, and comments through the app CLI."
+  default_prompt: "Use $agent-tasks to inspect or update local Agent Tasks nodes, steps, and comments. When creating tasks, write for a cold-start worker, check for duplicates first, choose the right subfolder, prefer source context in comments, and use safe task/step state workflow while working."

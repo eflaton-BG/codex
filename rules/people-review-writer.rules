@@ -1,0 +1,2 @@
+prefix_rule(pattern=["/usr/bin/python3", "/home/ezekiel.flaton@berkshiregrey.com/.codex/skills/people-review-writer/scripts/collect_github_prs.py"], decision="allow")
+

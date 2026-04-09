@@ -1,0 +1,7 @@
+{
+  "name": "app-launch",
+  "actions": [
+    { "type": "wait_for_timeout", "ms": 1200 },
+    { "type": "screenshot", "path": "app-launch.png", "full_page": false }
+  ]
+}

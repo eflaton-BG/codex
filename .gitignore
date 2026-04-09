@@ -1,0 +1,16 @@
+.personality_migration
+.tmp/
+auth.json
+cache/
+cloud-requirements-cache.json
+config.toml
+history.jsonl
+log/
+logs_1*
+memories/
+models_cache.json
+sessions/
+shell_snapshots/
+state_5*
+tmp/
+version.json

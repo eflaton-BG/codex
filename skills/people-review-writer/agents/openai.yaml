@@ -1,0 +1,4 @@
+interface:
+  display_name: "People Review Writer"
+  short_description: "Draft evidence-based people reviews."
+  default_prompt: "Use this skill to collect evidence about a person from local notes, Box, Jira, and GitHub, then draft a balanced manager review with strengths, growth areas, and concrete examples."

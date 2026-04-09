@@ -214,6 +214,16 @@ def inspect_docx(docx_path):
             print(f"{index}: {text}")
 
 
+def paragraph_snapshot(body):
+    children = list(body)
+    paragraph_positions = []
+    for idx, child in enumerate(children):
+        if child.tag == f"{{{W_NS}}}p":
+            paragraph_positions.append((idx, child))
+    paragraph_texts = [paragraph_text(paragraph) for _, paragraph in paragraph_positions]
+    return paragraph_positions, paragraph_texts
+
+
 def apply_statuses(docx_path, plan):
     with zipfile.ZipFile(docx_path) as archive:
         root = ET.fromstring(archive.read("word/document.xml"))
@@ -221,39 +231,40 @@ def apply_statuses(docx_path, plan):
     if body is None:
         raise RuntimeError("Unable to find document body in word/document.xml")
 
-    children = list(body)
-    paragraph_positions = []
-    for idx, child in enumerate(children):
-        if child.tag == f"{{{W_NS}}}p":
-            paragraph_positions.append((idx, child))
-
-    paragraph_texts = [paragraph_text(paragraph) for _, paragraph in paragraph_positions]
     summary = []
-    offset = 0
 
     for item in plan:
         marker = item["marker"].strip()
         status_line = item["status_line"].strip()
+        paragraph_positions, paragraph_texts = paragraph_snapshot(body)
 
-        if status_line in paragraph_texts:
+        marker_matches = [idx for idx, text in enumerate(paragraph_texts) if text == marker]
+        if len(marker_matches) != 1:
+            raise RuntimeError(f"Expected exactly one marker match for: {marker!r}; found {len(marker_matches)}")
+
+        marker_idx = marker_matches[0]
+        status_matches = [idx for idx, text in enumerate(paragraph_texts) if text == status_line]
+        if len(status_matches) == 1 and status_matches[0] == marker_idx + 1:
             summary.append({"marker": marker, "status_line": status_line, "result": "already-present"})
             continue
 
-        matches = [idx for idx, text in enumerate(paragraph_texts) if text == marker]
-        if len(matches) != 1:
-            raise RuntimeError(f"Expected exactly one marker match for: {marker!r}; found {len(matches)}")
+        removed = False
+        for status_idx in reversed(status_matches):
+            body.remove(paragraph_positions[status_idx][1])
+            removed = True
 
-        match_idx = matches[0]
-        body_insert_idx = paragraph_positions[match_idx][0] + 1 + offset
+        paragraph_positions, paragraph_texts = paragraph_snapshot(body)
+        marker_matches = [idx for idx, text in enumerate(paragraph_texts) if text == marker]
+        if len(marker_matches) != 1:
+            raise RuntimeError(
+                f"Expected exactly one marker match after status cleanup for: {marker!r}; found {len(marker_matches)}"
+            )
+
+        marker_idx = marker_matches[0]
+        body_insert_idx = paragraph_positions[marker_idx][0] + 1
         body.insert(body_insert_idx, make_text_paragraph(status_line))
-        offset += 1
-        paragraph_texts.insert(match_idx + 1, status_line)
-        paragraph_positions = []
-        children = list(body)
-        for idx, child in enumerate(children):
-            if child.tag == f"{{{W_NS}}}p":
-                paragraph_positions.append((idx, child))
-        summary.append({"marker": marker, "status_line": status_line, "result": "inserted"})
+        result = "moved" if removed else "inserted"
+        summary.append({"marker": marker, "status_line": status_line, "result": result})
 
     xml_bytes = ET.tostring(root, encoding="utf-8", xml_declaration=True)
     output_path = docx_path.with_suffix(".updated.docx")
@@ -261,13 +272,26 @@ def apply_statuses(docx_path, plan):
     return output_path, summary
 
 
-def verify_statuses(docx_path, status_lines):
+def verify_statuses(docx_path, plan):
     with zipfile.ZipFile(docx_path) as archive:
         root = ET.fromstring(archive.read("word/document.xml"))
-    paragraph_text_set = {paragraph_text(paragraph) for paragraph in root.findall(".//w:body/w:p", NS)}
-    missing = [line for line in status_lines if line not in paragraph_text_set]
-    if missing:
-        raise RuntimeError(f"Verification failed; missing status lines: {missing}")
+    body = root.find(".//w:body", NS)
+    if body is None:
+        raise RuntimeError("Unable to find document body during verification")
+    _, paragraph_texts = paragraph_snapshot(body)
+    for item in plan:
+        marker = item["marker"].strip()
+        status_line = item["status_line"].strip()
+        marker_matches = [idx for idx, text in enumerate(paragraph_texts) if text == marker]
+        status_matches = [idx for idx, text in enumerate(paragraph_texts) if text == status_line]
+        if len(marker_matches) != 1:
+            raise RuntimeError(f"Verification failed; expected one marker match for: {marker!r}")
+        if len(status_matches) != 1:
+            raise RuntimeError(f"Verification failed; expected one status match for: {status_line!r}")
+        if status_matches[0] != marker_matches[0] + 1:
+            raise RuntimeError(
+                f"Verification failed; status line is not directly below marker for: {marker!r}"
+            )
 
 
 def load_plan(plan_path_arg, entry_args):
@@ -314,7 +338,7 @@ def main():
                 handle,
             )
         redownloaded_path, _ = download_docx(client, file_id, work_dir)
-        verify_statuses(redownloaded_path, [item["status_line"] for item in plan])
+        verify_statuses(redownloaded_path, plan)
         print(json.dumps({"upload_response_type": type(response).__name__, "summary": summary}, indent=2))
 
 

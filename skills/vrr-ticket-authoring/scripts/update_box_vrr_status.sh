@@ -5,9 +5,14 @@ usage() {
   /usr/bin/cat >&2 <<'EOF'
 Usage:
   update_box_vrr_status.sh inspect <box-file-url-or-id>
-  update_box_vrr_status.sh apply <box-file-url-or-id> <plan-json>
+  update_box_vrr_status.sh apply <box-file-url-or-id> --entry <marker> <status-line> [--entry <marker> <status-line> ...]
+  update_box_vrr_status.sh apply <box-file-url-or-id> --plan-json <plan-json>
 
-Plan JSON format:
+Preferred direct-entry format:
+  update_box_vrr_status.sh apply <box-file-url-or-id> \
+    --entry "##TICKET ..." "TICKET_STATUS: WRITTEN | YYYY-MM-DD | RSPS-1234 | Summary | https://berkshiregrey.atlassian.net/browse/RSPS-1234"
+
+Legacy plan JSON format:
 [
   {
     "marker": "##TICKET ...",
@@ -24,7 +29,10 @@ fi
 
 COMMAND="$1"
 INPUT_ARG="$2"
-PLAN_JSON="${3:-}"
+shift 2
+
+PLAN_JSON=""
+PLAN_ENTRIES=()
 
 extract_file_id() {
   local input="$1"
@@ -46,18 +54,48 @@ BOX_FILE_ID="$(extract_file_id "$INPUT_ARG")" || {
 
 case "$COMMAND" in
   inspect)
-    if [[ $# -ne 2 ]]; then
+    if [[ $# -ne 0 ]]; then
       usage
       exit 2
     fi
     ;;
   apply)
-    if [[ $# -ne 3 ]]; then
-      usage
+    while [[ $# -gt 0 ]]; do
+      case "$1" in
+        --plan-json)
+          if [[ $# -lt 2 ]]; then
+            /usr/bin/printf 'Missing value for --plan-json\n' >&2
+            exit 2
+          fi
+          PLAN_JSON="$2"
+          shift 2
+          ;;
+        --entry)
+          if [[ $# -lt 3 ]]; then
+            /usr/bin/printf 'Each --entry requires <marker> and <status-line>\n' >&2
+            exit 2
+          fi
+          PLAN_ENTRIES+=("$2"$'\n'"$3")
+          shift 3
+          ;;
+        *)
+          /usr/bin/printf 'Unknown apply argument: %s\n' "$1" >&2
+          usage
+          exit 2
+          ;;
+      esac
+    done
+    if [[ -n "$PLAN_JSON" && ${#PLAN_ENTRIES[@]} -gt 0 ]]; then
+      /usr/bin/printf 'Use either --plan-json or --entry arguments, not both.\n' >&2
       exit 2
     fi
-    if [[ ! -f "$PLAN_JSON" ]]; then
-      /usr/bin/printf 'Plan JSON not found: %s\n' "$PLAN_JSON" >&2
+    if [[ -n "$PLAN_JSON" ]]; then
+      if [[ ! -f "$PLAN_JSON" ]]; then
+        /usr/bin/printf 'Plan JSON not found: %s\n' "$PLAN_JSON" >&2
+        exit 2
+      fi
+    elif [[ ${#PLAN_ENTRIES[@]} -eq 0 ]]; then
+      /usr/bin/printf 'apply requires at least one --entry or a --plan-json file.\n' >&2
       exit 2
     fi
     ;;
@@ -117,7 +155,7 @@ set -a
 . "$ENV_FILE"
 set +a
 
-"$UV_BIN" run python - "$COMMAND" "$BOX_FILE_ID" "${PLAN_JSON:-}" <<'PY'
+"$UV_BIN" run python - "$COMMAND" "$BOX_FILE_ID" "${PLAN_JSON:-}" "${PLAN_ENTRIES[@]}" <<'PY'
 import json
 import pathlib
 import sys
@@ -232,10 +270,30 @@ def verify_statuses(docx_path, status_lines):
         raise RuntimeError(f"Verification failed; missing status lines: {missing}")
 
 
+def load_plan(plan_path_arg, entry_args):
+    if plan_path_arg:
+        plan = json.loads(pathlib.Path(plan_path_arg).read_text(encoding="utf-8"))
+    else:
+        plan = []
+        for entry in entry_args:
+            try:
+                marker, status_line = entry.split("\n", 1)
+            except ValueError as exc:
+                raise RuntimeError(f"Invalid direct entry payload: {entry!r}") from exc
+            plan.append({"marker": marker, "status_line": status_line})
+    if not isinstance(plan, list) or not plan:
+        raise RuntimeError("Plan must be a non-empty array")
+    for item in plan:
+        if "marker" not in item or "status_line" not in item:
+            raise RuntimeError("Each plan entry must include marker and status_line")
+    return plan
+
+
 def main():
     command = sys.argv[1]
     file_id = sys.argv[2]
     plan_path_arg = sys.argv[3] if len(sys.argv) > 3 else ""
+    entry_args = sys.argv[4:]
     client = get_oauth_client()
 
     with tempfile.TemporaryDirectory(prefix="codex-box-vrr-") as work_dir:
@@ -246,13 +304,7 @@ def main():
             inspect_docx(docx_path)
             return
 
-        plan = json.loads(pathlib.Path(plan_path_arg).read_text(encoding="utf-8"))
-        if not isinstance(plan, list) or not plan:
-            raise RuntimeError("Plan JSON must be a non-empty array")
-        for item in plan:
-            if "marker" not in item or "status_line" not in item:
-                raise RuntimeError("Each plan entry must include marker and status_line")
-
+        plan = load_plan(plan_path_arg, entry_args)
         updated_docx_path, summary = apply_statuses(docx_path, plan)
         file_info = client.files.get_file_by_id(file_id)
         with updated_docx_path.open("rb") as handle:

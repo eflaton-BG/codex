@@ -21,8 +21,7 @@ For Box-hosted VRRs, always prefer the prefix-approvable wrapper script instead 
 - After writing the extracted text to the requested file, read that file for parsing instead of depending on shell redirection.
 - For Box `.docx` status writeback, use `scripts/update_box_vrr_status.sh` directly instead of rebuilding the Box download/upload command inline.
 - Preferred writeback flow:
-  - write a temporary JSON plan file containing `marker` and `status_line` entries
-  - run `/home/ezekiel.flaton@berkshiregrey.com/.codex/skills/vrr-ticket-authoring/scripts/update_box_vrr_status.sh apply <box-file-url-or-id> <plan-json>`
+  - run `/home/ezekiel.flaton@berkshiregrey.com/.codex/skills/vrr-ticket-authoring/scripts/update_box_vrr_status.sh apply <box-file-url-or-id> --entry "<marker>" "<status-line>" [--entry "<marker>" "<status-line>" ...]`
   - if you need to inspect the current marker paragraphs first, run `/home/ezekiel.flaton@berkshiregrey.com/.codex/skills/vrr-ticket-authoring/scripts/update_box_vrr_status.sh inspect <box-file-url-or-id>`
 
 ## Parse The VRR
@@ -166,11 +165,12 @@ If the source document cannot be edited in the current environment, stop after t
 ## Box Document Update Workflow
 
 When the VRR source is a Box `.docx` and a status marker must be written back:
-- prefer `/home/ezekiel.flaton@berkshiregrey.com/.codex/skills/vrr-ticket-authoring/scripts/update_box_vrr_status.sh apply <box-file-url-or-id> <plan-json>` for the entire writeback and verification flow
+- prefer `/home/ezekiel.flaton@berkshiregrey.com/.codex/skills/vrr-ticket-authoring/scripts/update_box_vrr_status.sh apply <box-file-url-or-id> --entry "<marker>" "<status-line>" [--entry "<marker>" "<status-line>" ...]` for the entire writeback and verification flow
 - use `/home/ezekiel.flaton@berkshiregrey.com/.codex/skills/vrr-ticket-authoring/scripts/update_box_vrr_status.sh inspect <box-file-url-or-id>` when you need to confirm the exact marker paragraphs before writing
-- keep the plan file entries exact:
+- keep each direct entry exact:
   - `marker`: the full marker paragraph text, including the original `##TICKET` or `##TICKETUPDATE` line
   - `status_line`: the full `TICKET_STATUS: ...` or `TICKETUPDATE_STATUS: ...` line to insert
+- the helper still supports `--plan-json <plan-json>` as a legacy fallback when direct shell arguments are impractical
 - the wrapper handles local download, paragraph insertion, clean `.docx` rebuild, Box version upload, and post-upload verification
 - if the Box version upload fails unexpectedly, ask the user to check whether the Box document is locked before concluding the token or file permissions are wrong
 - verify recent `.docx` writes through the wrapper's re-download step rather than relying on Box text extraction alone

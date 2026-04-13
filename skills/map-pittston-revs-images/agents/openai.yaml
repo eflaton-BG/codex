@@ -1,0 +1,4 @@
+interface:
+  display_name: "Map Pittston REV Images"
+  short_description: "Trace tote/product pairs to REV images."
+  default_prompt: "Map Pittston/Washington donor tote and product combinations from metrics_events and log.records to REV sync timestamps, perception-logger PNG filenames, and eligibility outcomes."

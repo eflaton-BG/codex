@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Copy REV image files referenced by a CSV using resumable batched kubectl exec tar operations."""
+"""Copy REV image files referenced by a CSV using resumable per-file kubectl cp operations."""
 
 from __future__ import annotations
 
@@ -10,39 +10,52 @@ import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Iterable, Sequence
+from typing import Iterable
 
 
 SUCCESS_STATUSES = {"ok", "exists"}
+SYSTEMIC_POD_NOT_FOUND = "Error from server (NotFound): pods"
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
             "Read a CSV containing png_filename values, deduplicate them, write local manifests, "
-            "and copy the image files in resumable batches using kubectl exec plus tar."
+            "and copy the image files one at a time using kubectl cp with built-in retries."
         )
     )
     parser.add_argument("--csv", required=True, help="Input CSV with a png_filename column.")
     parser.add_argument("--output-dir", required=True, help="Directory where image files will be copied.")
     parser.add_argument("--pod", help="Pod name that contains /var/bg/image_data or the selected remote root.")
     parser.add_argument("--namespace", help="Kubernetes namespace. Optional.")
-    parser.add_argument("--container", help="Container name for kubectl exec. Optional.")
+    parser.add_argument("--container", help="Container name for kubectl cp. Optional.")
     parser.add_argument("--context", help="kubectl context. Optional.")
-    parser.add_argument("--remote-root", default="/var/bg/image_data", help="Remote root that contains the image_data tree. Default: /var/bg/image_data.")
-    parser.add_argument("--kubectl", default="/usr/local/bin/kubectl", help="Absolute kubectl path. Default: /usr/local/bin/kubectl.")
-    parser.add_argument("--local-tar", default="/usr/bin/tar", help="Absolute local tar path. Default: /usr/bin/tar.")
-    parser.add_argument("--state-dir", help="State directory for manifests and logs. Default: <output-dir>/.copy-state")
-    parser.add_argument("--retries", type=int, default=999999, help="Retries per batch after the first attempt. Default: 999999.")
-    parser.add_argument("--batch-size", type=int, default=10, help="Number of files to transfer per batch. Default: 10.")
+    parser.add_argument(
+        "--remote-root",
+        default="/var/bg/image_data",
+        help="Remote root that contains the image_data tree. Default: /var/bg/image_data.",
+    )
+    parser.add_argument(
+        "--kubectl",
+        default="/usr/local/bin/kubectl",
+        help="Absolute kubectl path. Default: /usr/local/bin/kubectl.",
+    )
+    parser.add_argument(
+        "--state-dir",
+        help="State directory for manifests and logs. Default: <output-dir>/.copy-state",
+    )
+    parser.add_argument(
+        "--retries",
+        type=int,
+        default=999999,
+        help="Pass-through value for kubectl cp --retries. Default: 999999.",
+    )
     parser.add_argument("--limit", type=int, help="Only process the first N pending files.")
     parser.add_argument("--manifest-only", action="store_true", help="Write manifests but do not run downloads.")
-    parser.add_argument("--overwrite", action="store_true", help="Overwrite files that already exist locally.")
+    parser.add_argument("--overwrite", action="store_true", help="Re-copy files even if they were previously marked successful.")
     args = parser.parse_args()
     if not args.manifest_only and not args.pod:
         parser.error("--pod is required unless --manifest-only is set.")
-    if args.batch_size <= 0:
-        parser.error("--batch-size must be positive.")
     return args
 
 
@@ -82,7 +95,9 @@ def load_latest_statuses(results_path: Path) -> dict[str, dict]:
             if not line:
                 continue
             record = json.loads(line)
-            statuses[record["png_filename"]] = record
+            png_filename = record.get("png_filename")
+            if png_filename:
+                statuses[png_filename] = record
     return statuses
 
 
@@ -104,7 +119,8 @@ def append_jsonl(path: Path, record: dict) -> None:
 def refresh_manifests(state_dir: Path, all_pngs: list[str], latest_statuses: dict[str, dict]) -> tuple[list[str], list[str], list[str]]:
     copied = [png for png in all_pngs if latest_statuses.get(png, {}).get("status") in SUCCESS_STATUSES]
     failed = [png for png in all_pngs if latest_statuses.get(png, {}).get("status") == "failed"]
-    pending = [png for png in all_pngs if png not in set(copied)]
+    copied_set = set(copied)
+    pending = [png for png in all_pngs if png not in copied_set]
     write_list(state_dir / "all_pngs.txt", all_pngs)
     write_list(state_dir / "copied_pngs.txt", copied)
     write_list(state_dir / "failed_pngs.txt", failed)
@@ -112,214 +128,147 @@ def refresh_manifests(state_dir: Path, all_pngs: list[str], latest_statuses: dic
     return copied, failed, pending
 
 
-def pod_spec(namespace: str | None, pod: str) -> list[str]:
-    parts: list[str] = []
-    if namespace:
-        parts.extend(["-n", namespace])
-    parts.append(pod)
-    return parts
-
-
-def chunked(values: Sequence[str], size: int) -> Iterable[list[str]]:
-    for index in range(0, len(values), size):
-        yield list(values[index : index + size])
-
-
-def batch_paths(output_dir: Path, png_filenames: Sequence[str]) -> list[Path]:
-    return [output_dir / png_filename for png_filename in png_filenames]
-
-
-def remove_local_targets(paths: Sequence[Path]) -> None:
-    for path in paths:
-        if path.exists():
-            path.unlink()
-
-
-def ensure_parent_dirs(paths: Sequence[Path]) -> None:
-    for path in paths:
-        path.parent.mkdir(parents=True, exist_ok=True)
-
-
-def kubectl_exec_command(args: argparse.Namespace, png_filenames: Sequence[str]) -> list[str]:
+def kubectl_cp_command(args: argparse.Namespace, png_filename: str, local_target: Path) -> list[str]:
+    remote_path = args.remote_root.rstrip("/") + "/" + png_filename
     command = [args.kubectl]
     if args.context:
         command.extend(["--context", args.context])
-    command.append("exec")
+    if args.namespace:
+        command.extend(["-n", args.namespace])
+    command.extend(["cp", "--retries", str(args.retries)])
     if args.container:
         command.extend(["-c", args.container])
-    command.extend(pod_spec(args.namespace, args.pod))
-    command.extend(["--", "tar", "cf", "-", "-C", args.remote_root])
-    command.extend(png_filenames)
+    command.extend([f"{args.pod}:{remote_path}", str(local_target)])
     return command
 
 
-def local_extract_command(args: argparse.Namespace, output_dir: Path) -> list[str]:
-    return [args.local_tar, "xf", "-", "-C", str(output_dir)]
-
-
-def batch_status_records(
-    png_filenames: Sequence[str],
-    local_paths: Sequence[Path],
-    exec_command: list[str],
-    extract_command: list[str],
+def build_record(
+    png_filename: str,
+    local_target: Path,
+    copy_command: list[str],
     status: str,
-    attempt: int,
     returncode: int,
     stdout: str,
     stderr: str,
-) -> list[dict]:
-    timestamp = utc_now()
-    records: list[dict] = []
-    for png_filename, local_path in zip(png_filenames, local_paths, strict=True):
-        records.append(
-            {
-                "timestamp": timestamp,
-                "png_filename": png_filename,
-                "local_target": str(local_path),
-                "exec_command": exec_command,
-                "extract_command": extract_command,
-                "status": status,
-                "attempt": attempt,
-                "returncode": returncode,
-                "stdout": stdout[-4000:],
-                "stderr": stderr[-4000:],
-            }
+    *,
+    removed_partial: bool = False,
+) -> dict:
+    record = {
+        "timestamp": utc_now(),
+        "png_filename": png_filename,
+        "local_target": str(local_target),
+        "copy_command": copy_command,
+        "status": status,
+        "attempt": 1,
+        "returncode": returncode,
+        "stdout": stdout[-4000:],
+        "stderr": stderr[-4000:],
+    }
+    if removed_partial:
+        record["removed_partial"] = True
+    return record
+
+
+def copy_one(args: argparse.Namespace, png_filename: str, output_dir: Path) -> dict:
+    local_target = output_dir / png_filename
+    local_target.parent.mkdir(parents=True, exist_ok=True)
+
+    if local_target.exists():
+        local_target.unlink()
+
+    copy_command = kubectl_cp_command(args, png_filename, local_target)
+    completed = subprocess.run(copy_command, capture_output=True, text=True)
+    stdout = completed.stdout or ""
+    stderr = completed.stderr or ""
+
+    if completed.returncode == 0 and local_target.exists():
+        return build_record(
+            png_filename,
+            local_target,
+            copy_command,
+            "ok",
+            completed.returncode,
+            stdout,
+            stderr,
         )
-    return records
 
+    removed_partial = False
+    if local_target.exists():
+        local_target.unlink()
+        removed_partial = True
 
-def run_batch_once(args: argparse.Namespace, png_filenames: Sequence[str], output_dir: Path) -> tuple[int, str, str, list[Path], list[str], list[str]]:
-    local_paths = batch_paths(output_dir, png_filenames)
-    ensure_parent_dirs(local_paths)
-    remove_local_targets(local_paths)
-
-    exec_command = kubectl_exec_command(args, png_filenames)
-    extract_command = local_extract_command(args, output_dir)
-
-    exec_process = subprocess.Popen(exec_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    assert exec_process.stdout is not None
-    assert exec_process.stderr is not None
-    extract_completed = subprocess.run(extract_command, stdin=exec_process.stdout, capture_output=True)
-    exec_process.stdout.close()
-    exec_stderr = exec_process.stderr.read().decode("utf-8", errors="replace")
-    exec_process.stderr.close()
-    exec_returncode = exec_process.wait()
-
-    extract_stdout = extract_completed.stdout.decode("utf-8", errors="replace")
-    extract_stderr = extract_completed.stderr.decode("utf-8", errors="replace")
-    combined_stdout = extract_stdout
-    combined_stderr = exec_stderr + extract_stderr
-    returncode = exec_returncode if exec_returncode != 0 else extract_completed.returncode
-    return returncode, combined_stdout, combined_stderr, local_paths, exec_command, extract_command
-
-
-def copy_batch(args: argparse.Namespace, png_filenames: Sequence[str], output_dir: Path, results_path: Path) -> list[dict]:
-    attempt = 0
-    max_attempts = None if args.retries < 0 else args.retries + 1
-    while max_attempts is None or attempt < max_attempts:
-        attempt += 1
-        returncode, stdout, stderr, local_paths, exec_command, extract_command = run_batch_once(args, png_filenames, output_dir)
-        if returncode == 0:
-            records = batch_status_records(
-                png_filenames,
-                local_paths,
-                exec_command,
-                extract_command,
-                "ok",
-                attempt,
-                returncode,
-                stdout,
-                stderr,
-            )
-            for record in records:
-                append_jsonl(results_path, record)
-            return records
-        remove_local_targets(local_paths)
-        if max_attempts is not None and attempt >= max_attempts:
-            records = batch_status_records(
-                png_filenames,
-                local_paths,
-                exec_command,
-                extract_command,
-                "failed",
-                attempt,
-                returncode,
-                stdout,
-                stderr,
-            )
-            for record in records:
-                append_jsonl(results_path, record)
-            return records
-
-    raise AssertionError("unreachable")
+    return build_record(
+        png_filename,
+        local_target,
+        copy_command,
+        "failed",
+        completed.returncode,
+        stdout,
+        stderr,
+        removed_partial=removed_partial,
+    )
 
 
 def main() -> int:
     args = parse_args()
     csv_path = Path(args.csv)
     output_dir = Path(args.output_dir)
-    output_dir.mkdir(parents=True, exist_ok=True)
     state_dir = state_dir_for(args, output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
     state_dir.mkdir(parents=True, exist_ok=True)
-    results_path = state_dir / "results.jsonl"
 
     all_pngs = read_unique_pngs(csv_path)
+    results_path = state_dir / "results.jsonl"
     latest_statuses = load_latest_statuses(results_path)
     copied, failed, pending = refresh_manifests(state_dir, all_pngs, latest_statuses)
 
-    summary = {
-        "timestamp": utc_now(),
-        "csv": str(csv_path),
-        "output_dir": str(output_dir),
-        "state_dir": str(state_dir),
-        "total_unique_pngs": len(all_pngs),
-        "already_copied": len(copied),
-        "pending": len(pending),
-        "failed": len(failed),
-        "manifest_only": args.manifest_only,
-        "batch_size": args.batch_size,
-        "retries": args.retries,
-    }
-    print(json.dumps(summary, indent=2), file=sys.stderr)
-
-    if args.manifest_only:
-        return 0
+    if args.overwrite:
+        pending = list(all_pngs)
 
     if args.limit is not None:
         pending = pending[: args.limit]
 
-    batches = list(chunked(pending, args.batch_size))
-    for batch_index, batch in enumerate(batches, start=1):
-        print(f"[batch {batch_index}/{len(batches)}] {len(batch)} files", file=sys.stderr)
-        records = copy_batch(args, batch, output_dir, results_path)
-        for record in records:
-            latest_statuses[record["png_filename"]] = record
-        copied, failed, pending_all = refresh_manifests(state_dir, all_pngs, latest_statuses)
-        print(
-            json.dumps(
-                {
-                    "batch": batch_index,
-                    "status": records[0]["status"] if records else "unknown",
-                    "copied": len(copied),
-                    "failed": len(failed),
-                    "remaining": len(pending_all),
-                }
-            ),
-            file=sys.stderr,
-        )
-
-    latest_statuses = load_latest_statuses(results_path)
-    copied, failed, pending = refresh_manifests(state_dir, all_pngs, latest_statuses)
-    final_summary = {
+    summary = {
         "timestamp": utc_now(),
         "total_unique_pngs": len(all_pngs),
-        "copied": len(copied),
+        "already_copied": len(copied),
         "failed": len(failed),
         "pending": len(pending),
-        "results": str(results_path),
+        "output_dir": str(output_dir),
+        "state_dir": str(state_dir),
+        "manifest_only": args.manifest_only,
+        "retries": args.retries,
+        "mode": "per-file-kubectl-cp",
     }
-    print(json.dumps(final_summary, indent=2), file=sys.stderr)
-    return 1 if failed else 0
+    print(json.dumps(summary, sort_keys=True))
+
+    if args.manifest_only:
+        return 0
+
+    for index, png_filename in enumerate(pending, start=1):
+        record = copy_one(args, png_filename, output_dir)
+        append_jsonl(results_path, record)
+        latest_statuses[png_filename] = record
+        copied, failed, pending_after = refresh_manifests(state_dir, all_pngs, latest_statuses)
+        progress = {
+            "timestamp": utc_now(),
+            "index": index,
+            "total": len(pending),
+            "png_filename": png_filename,
+            "status": record["status"],
+            "already_copied": len(copied),
+            "failed": len(failed),
+            "pending": len(pending_after),
+        }
+        print(json.dumps(progress, sort_keys=True))
+        sys.stdout.flush()
+
+        if record["status"] == "failed" and SYSTEMIC_POD_NOT_FOUND in record["stderr"]:
+            print(json.dumps({"timestamp": utc_now(), "abort_reason": "pod-not-found", "pod": args.pod, "png_filename": png_filename}, sort_keys=True))
+            sys.stdout.flush()
+            return 1
+
+    return 0
 
 
 if __name__ == "__main__":

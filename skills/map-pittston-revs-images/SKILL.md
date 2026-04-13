@@ -27,15 +27,19 @@ Always split image retrieval into two phases.
 - Write the local manifest and state files first.
 - Prefer `--manifest-only` when beginning the download workflow.
 - Show the user the deduped counts, target output directory, and intended pod or container source.
+- If time has passed or the pod has rotated, export the live pod directory listing and intersect it with the deduped manifest before starting downloads.
 
 ### Phase 2: Downloads
 
 - Do not start downloads automatically after manifest generation.
 - Check in with the user after phase 1 and wait for explicit confirmation before starting downloads.
 - Use the resumable copy helper instead of generating one command per row.
-- Default to batched downloads of `10` files at a time.
-- Default the batch retry budget to `999999` unless the user explicitly asks for something else.
-- Keep the state directory and result log updated after every batch so interrupted runs can resume cleanly.
+- Default to per-file `kubectl cp` so a failed transfer only retries one image at a time.
+- Default `kubectl cp --retries` to `999999` unless the user explicitly asks for something else.
+- Keep the state directory and result log updated after every file so interrupted runs can resume cleanly.
+- If the pod does not have `rsync`, do not batch files just to reduce command count. Preserve file-level resumability instead.
+- If `kubectl` reports `pod not found`, resolve the current `perception-logger` pod name in the namespace before resuming.
+- If the live pod manifest overlap is zero, stop and report the blocker instead of churning through per-file copies.
 
 ## Bundled Scripts
 
@@ -49,7 +53,7 @@ Run `scripts/export_pittston_revs_table.py` through the existing Vault-backed El
   --output /tmp/pittston_revs_table.csv
 ```
 
-For image retrieval, prefer `scripts/copy_revs_images.py`. It reads the CSV, deduplicates `png_filename`, writes local manifests, and then downloads the pending files in resumable batches using `kubectl exec ... tar`.
+For image retrieval, prefer `scripts/copy_revs_images.py`. It reads the CSV, deduplicates `png_filename`, writes local manifests, and then downloads the pending files one at a time with `kubectl cp --retries`.
 
 Manifest-only phase:
 
@@ -72,9 +76,9 @@ Confirmed download phase:
 
 The copy script defaults:
 
-- `--batch-size 10`
-- `--retries 999999`
 - `--kubectl /usr/local/bin/kubectl`
+- `--retries 999999`
+- per-file `kubectl cp`
 
 The copy script writes state under `<output-dir>/.copy-state` by default:
 

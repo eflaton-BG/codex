@@ -7,6 +7,7 @@ config.toml
 history.jsonl
 log/
 logs_1*
+logs_2*
 memories/
 models_cache.json
 sessions/

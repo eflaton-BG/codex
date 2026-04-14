@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
-"""Copy REV image files referenced by a CSV using resumable per-file kubectl cp operations."""
+"""Copy REV image files referenced by a CSV using resumable rsync or kubectl cp transfers."""
 
 from __future__ import annotations
 
 import argparse
 import csv
 import json
+import os
+import shlex
+import stat
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -15,21 +18,35 @@ from typing import Iterable
 
 SUCCESS_STATUSES = {"ok", "exists"}
 SYSTEMIC_POD_NOT_FOUND = "Error from server (NotFound): pods"
+KUBE_AUTH_FAILURE_MARKERS = (
+    "You must be logged in to the server",
+    "the server has asked for the client to provide credentials",
+)
+REMOTE_RSYNC_MISSING_MARKERS = (
+    "executable file not found",
+    "No such file or directory",
+    "not found",
+)
+RSYNC_REMOTE_HOST = "pittston-pod"
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
             "Read a CSV containing png_filename values, deduplicate them, write local manifests, "
-            "and copy the image files one at a time using kubectl cp with built-in retries."
+            "and copy the image files using resumable rsync over kubectl exec."
         )
     )
     parser.add_argument("--csv", required=True, help="Input CSV with a png_filename column.")
     parser.add_argument("--output-dir", required=True, help="Directory where image files will be copied.")
     parser.add_argument("--pod", help="Pod name that contains /var/bg/image_data or the selected remote root.")
     parser.add_argument("--namespace", help="Kubernetes namespace. Optional.")
-    parser.add_argument("--container", help="Container name for kubectl cp. Optional.")
-    parser.add_argument("--context", help="kubectl context. Optional.")
+    parser.add_argument("--container", help="Container name for kubectl exec/cp. Optional.")
+    parser.add_argument(
+        "--context",
+        default="k8s/washington-pit-context",
+        help="kubectl context. Default: k8s/washington-pit-context.",
+    )
     parser.add_argument(
         "--remote-root",
         default="/var/bg/image_data",
@@ -39,6 +56,22 @@ def parse_args() -> argparse.Namespace:
         "--kubectl",
         default="/usr/local/bin/kubectl",
         help="Absolute kubectl path. Default: /usr/local/bin/kubectl.",
+    )
+    parser.add_argument(
+        "--transfer-mode",
+        choices=("rsync", "kubectl-cp"),
+        default="rsync",
+        help="Transfer backend. Default: rsync.",
+    )
+    parser.add_argument(
+        "--rsync",
+        default="/usr/bin/rsync",
+        help="Absolute local rsync path. Default: /usr/bin/rsync.",
+    )
+    parser.add_argument(
+        "--remote-rsync",
+        default="/usr/bin/rsync",
+        help="Absolute rsync path inside the pod. Default: /usr/bin/rsync.",
     )
     parser.add_argument(
         "--state-dir",
@@ -52,7 +85,11 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--limit", type=int, help="Only process the first N pending files.")
     parser.add_argument("--manifest-only", action="store_true", help="Write manifests but do not run downloads.")
-    parser.add_argument("--overwrite", action="store_true", help="Re-copy files even if they were previously marked successful.")
+    parser.add_argument(
+        "--overwrite",
+        action="store_true",
+        help="Re-copy files even if they were previously marked successful.",
+    )
     args = parser.parse_args()
     if not args.manifest_only and not args.pod:
         parser.error("--pod is required unless --manifest-only is set.")
@@ -128,6 +165,36 @@ def refresh_manifests(state_dir: Path, all_pngs: list[str], latest_statuses: dic
     return copied, failed, pending
 
 
+def kubectl_exec_prefix(args: argparse.Namespace) -> list[str]:
+    command = [args.kubectl]
+    if args.context:
+        command.extend(["--context", args.context])
+    command.append("exec")
+    command.append("-i")
+    if args.namespace:
+        command.extend(["-n", args.namespace])
+    if args.container:
+        command.extend(["-c", args.container])
+    command.append(args.pod)
+    command.append("--")
+    return command
+
+
+def ensure_rsync_rsh(args: argparse.Namespace, state_dir: Path) -> Path:
+    wrapper_path = state_dir / "kubectl_rsync_rsh.sh"
+    command = kubectl_exec_prefix(args)
+    quoted = " ".join(shlex.quote(part) for part in command)
+    script = (
+        "#!/bin/sh\n"
+        "host=\"$1\"\n"
+        "shift\n"
+        f"exec {quoted} \"$@\"\n"
+    )
+    wrapper_path.write_text(script, encoding="utf-8")
+    wrapper_path.chmod(wrapper_path.stat().st_mode | stat.S_IXUSR)
+    return wrapper_path
+
+
 def kubectl_cp_command(args: argparse.Namespace, png_filename: str, local_target: Path) -> list[str]:
     remote_path = args.remote_root.rstrip("/") + "/" + png_filename
     command = [args.kubectl]
@@ -142,6 +209,25 @@ def kubectl_cp_command(args: argparse.Namespace, png_filename: str, local_target
     return command
 
 
+def rsync_command(args: argparse.Namespace, png_filename: str, local_target: Path, state_dir: Path) -> list[str]:
+    remote_path = args.remote_root.rstrip("/") + "/" + png_filename
+    rsh_path = ensure_rsync_rsh(args, state_dir)
+    command = [
+        args.rsync,
+        "--archive",
+        "--partial",
+        "--append-verify",
+        "--inplace",
+        "--rsh",
+        str(rsh_path),
+        "--rsync-path",
+        args.remote_rsync,
+        f"{RSYNC_REMOTE_HOST}:{remote_path}",
+        str(local_target),
+    ]
+    return command
+
+
 def build_record(
     png_filename: str,
     local_target: Path,
@@ -152,6 +238,8 @@ def build_record(
     stderr: str,
     *,
     removed_partial: bool = False,
+    preserved_partial: bool = False,
+    transfer_mode: str,
 ) -> dict:
     record = {
         "timestamp": utc_now(),
@@ -163,20 +251,31 @@ def build_record(
         "returncode": returncode,
         "stdout": stdout[-4000:],
         "stderr": stderr[-4000:],
+        "transfer_mode": transfer_mode,
     }
     if removed_partial:
         record["removed_partial"] = True
+    if preserved_partial:
+        record["preserved_partial"] = True
     return record
 
 
-def copy_one(args: argparse.Namespace, png_filename: str, output_dir: Path) -> dict:
+def transfer_command_for(args: argparse.Namespace, png_filename: str, local_target: Path, state_dir: Path) -> list[str]:
+    if args.transfer_mode == "rsync":
+        return rsync_command(args, png_filename, local_target, state_dir)
+    return kubectl_cp_command(args, png_filename, local_target)
+
+
+def copy_one(args: argparse.Namespace, png_filename: str, output_dir: Path, state_dir: Path) -> dict:
     local_target = output_dir / png_filename
     local_target.parent.mkdir(parents=True, exist_ok=True)
 
-    if local_target.exists():
+    if args.overwrite and local_target.exists():
+        local_target.unlink()
+    elif args.transfer_mode == "kubectl-cp" and local_target.exists():
         local_target.unlink()
 
-    copy_command = kubectl_cp_command(args, png_filename, local_target)
+    copy_command = transfer_command_for(args, png_filename, local_target, state_dir)
     completed = subprocess.run(copy_command, capture_output=True, text=True)
     stdout = completed.stdout or ""
     stderr = completed.stderr or ""
@@ -190,6 +289,20 @@ def copy_one(args: argparse.Namespace, png_filename: str, output_dir: Path) -> d
             completed.returncode,
             stdout,
             stderr,
+            transfer_mode=args.transfer_mode,
+        )
+
+    if args.transfer_mode == "rsync":
+        return build_record(
+            png_filename,
+            local_target,
+            copy_command,
+            "failed",
+            completed.returncode,
+            stdout,
+            stderr,
+            preserved_partial=local_target.exists(),
+            transfer_mode=args.transfer_mode,
         )
 
     removed_partial = False
@@ -206,7 +319,26 @@ def copy_one(args: argparse.Namespace, png_filename: str, output_dir: Path) -> d
         stdout,
         stderr,
         removed_partial=removed_partial,
+        transfer_mode=args.transfer_mode,
     )
+
+
+def remote_rsync_missing(args: argparse.Namespace, record: dict) -> bool:
+    if args.transfer_mode != "rsync" or record["status"] != "failed":
+        return False
+    stderr = record.get("stderr", "")
+    stdout = record.get("stdout", "")
+    combined = f"{stderr}\n{stdout}"
+    return args.remote_rsync in combined and any(marker in combined for marker in REMOTE_RSYNC_MISSING_MARKERS)
+
+
+def kube_auth_failed(record: dict) -> bool:
+    if record["status"] != "failed":
+        return False
+    stderr = record.get("stderr", "")
+    stdout = record.get("stdout", "")
+    combined = f"{stderr}\n{stdout}"
+    return any(marker in combined for marker in KUBE_AUTH_FAILURE_MARKERS)
 
 
 def main() -> int:
@@ -238,7 +370,8 @@ def main() -> int:
         "state_dir": str(state_dir),
         "manifest_only": args.manifest_only,
         "retries": args.retries,
-        "mode": "per-file-kubectl-cp",
+        "transfer_mode": args.transfer_mode,
+        "context": args.context,
     }
     print(json.dumps(summary, sort_keys=True))
 
@@ -246,7 +379,7 @@ def main() -> int:
         return 0
 
     for index, png_filename in enumerate(pending, start=1):
-        record = copy_one(args, png_filename, output_dir)
+        record = copy_one(args, png_filename, output_dir, state_dir)
         append_jsonl(results_path, record)
         latest_statuses[png_filename] = record
         copied, failed, pending_after = refresh_manifests(state_dir, all_pngs, latest_statuses)
@@ -259,12 +392,56 @@ def main() -> int:
             "already_copied": len(copied),
             "failed": len(failed),
             "pending": len(pending_after),
+            "transfer_mode": args.transfer_mode,
         }
         print(json.dumps(progress, sort_keys=True))
         sys.stdout.flush()
 
+        if kube_auth_failed(record):
+            print(
+                json.dumps(
+                    {
+                        "timestamp": utc_now(),
+                        "abort_reason": "kube-auth-failed",
+                        "context": args.context,
+                        "pod": args.pod,
+                        "png_filename": png_filename,
+                        "action": "refresh kubectl auth and rerun",
+                    },
+                    sort_keys=True,
+                )
+            )
+            sys.stdout.flush()
+            return 1
+
         if record["status"] == "failed" and SYSTEMIC_POD_NOT_FOUND in record["stderr"]:
-            print(json.dumps({"timestamp": utc_now(), "abort_reason": "pod-not-found", "pod": args.pod, "png_filename": png_filename}, sort_keys=True))
+            print(
+                json.dumps(
+                    {
+                        "timestamp": utc_now(),
+                        "abort_reason": "pod-not-found",
+                        "pod": args.pod,
+                        "png_filename": png_filename,
+                    },
+                    sort_keys=True,
+                )
+            )
+            sys.stdout.flush()
+            return 1
+
+        if remote_rsync_missing(args, record):
+            print(
+                json.dumps(
+                    {
+                        "timestamp": utc_now(),
+                        "abort_reason": "remote-rsync-missing",
+                        "pod": args.pod,
+                        "png_filename": png_filename,
+                        "install_hint": "sudo apt-get update && sudo apt install rsync",
+                    },
+                    sort_keys=True,
+                )
+            )
             sys.stdout.flush()
             return 1
 

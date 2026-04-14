@@ -27,6 +27,7 @@ Always split image retrieval into two phases.
 - Write the local manifest and state files first.
 - Prefer `--manifest-only` when beginning the download workflow.
 - Show the user the deduped counts, target output directory, and intended pod or container source.
+- For Pittston runs, use `--context k8s/washington-pit-context` or rely on the script default.
 - If time has passed or the pod has rotated, export the live pod directory listing and intersect it with the deduped manifest before starting downloads.
 
 ### Phase 2: Downloads
@@ -34,12 +35,13 @@ Always split image retrieval into two phases.
 - Do not start downloads automatically after manifest generation.
 - Check in with the user after phase 1 and wait for explicit confirmation before starting downloads.
 - Use the resumable copy helper instead of generating one command per row.
-- Default to per-file `kubectl cp` so a failed transfer only retries one image at a time.
-- Default `kubectl cp --retries` to `999999` unless the user explicitly asks for something else.
+- Default to `rsync` over `kubectl exec` so partial local files can resume instead of restarting from byte zero.
+- Keep `kubectl cp` only as a fallback when `rsync` is not available.
+- If `rsync` is missing on the pod, the operator can install it with `sudo apt-get update` and then `sudo apt install rsync`.
 - Keep the state directory and result log updated after every file so interrupted runs can resume cleanly.
-- If the pod does not have `rsync`, do not batch files just to reduce command count. Preserve file-level resumability instead.
 - If `kubectl` reports `pod not found`, resolve the current `perception-logger` pod name in the namespace before resuming.
-- If the live pod manifest overlap is zero, stop and report the blocker instead of churning through per-file copies.
+- If `kubectl` reports credential failures like `You must be logged in to the server` or `the server has asked for the client to provide credentials`, stop the run immediately, refresh auth, and only then resume.
+- If the live pod manifest overlap is zero, stop and report the blocker instead of churning through transfers.
 
 ## Bundled Scripts
 
@@ -53,7 +55,7 @@ Run `scripts/export_pittston_revs_table.py` through the existing Vault-backed El
   --output /tmp/pittston_revs_table.csv
 ```
 
-For image retrieval, prefer `scripts/copy_revs_images.py`. It reads the CSV, deduplicates `png_filename`, writes local manifests, and then downloads the pending files one at a time with `kubectl cp --retries`.
+For image retrieval, prefer `scripts/copy_revs_images.py`. It reads the CSV, deduplicates `png_filename`, writes local manifests, and then downloads the pending files with resumable `rsync` over `kubectl exec`.
 
 Manifest-only phase:
 
@@ -70,15 +72,19 @@ Confirmed download phase:
 /usr/bin/python3 /home/ezekiel.flaton@berkshiregrey.com/.codex/skills/map-pittston-revs-images/scripts/copy_revs_images.py \
   --csv /tmp/pittston_revs_table_2026-04-09.csv \
   --output-dir /tmp/pittston_revs_images_2026-04-09 \
-  --namespace <namespace> \
-  --pod <pod-name>
+  --context k8s/washington-pit-context \
+  --namespace res1 \
+  --pod perception-logger-58766bcd8c-bljcr
 ```
 
 The copy script defaults:
 
+- `--context k8s/washington-pit-context`
+- `--transfer-mode rsync`
+- `--rsync /usr/bin/rsync`
+- `--remote-rsync /usr/bin/rsync`
 - `--kubectl /usr/local/bin/kubectl`
-- `--retries 999999`
-- per-file `kubectl cp`
+- `--retries 999999` for `kubectl cp` fallback only
 
 The copy script writes state under `<output-dir>/.copy-state` by default:
 
@@ -87,6 +93,7 @@ The copy script writes state under `<output-dir>/.copy-state` by default:
 - `copied_pngs.txt`
 - `failed_pngs.txt`
 - `results.jsonl`
+- `kubectl_rsync_rsh.sh`
 
 ## Query Rules
 

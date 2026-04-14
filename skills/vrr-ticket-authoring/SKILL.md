@@ -172,6 +172,7 @@ When the VRR source is a Box `.docx` and a status marker must be written back:
   - `status_line`: the full `TICKET_STATUS: ...` or `TICKETUPDATE_STATUS: ...` line to insert
 - the helper still supports `--plan-json <plan-json>` as a legacy fallback when direct shell arguments are impractical
 - the wrapper handles local download, paragraph insertion, clean `.docx` rebuild, Box version upload, and post-upload verification
-- if the Box version upload fails unexpectedly, ask the user to check whether the Box document is locked before concluding the token or file permissions are wrong
+- if the Box version upload fails unexpectedly, immediately ask the user to unlock the Box document or confirm its lock status before concluding the token or file permissions are wrong
+- treat a locked Box file as a first-class likely cause of `403 access_denied_insufficient_permissions` during version upload, even if earlier metadata suggests the file is otherwise writable
 - verify recent `.docx` writes through the wrapper's re-download step rather than relying on Box text extraction alone
 - do not rely only on `box_file_text_extract(...)` for immediate post-upload verification because Box text extraction can lag behind the latest uploaded version

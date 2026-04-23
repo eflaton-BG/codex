@@ -1,4 +1,0 @@
-interface:
-  display_name: "VRR Ticket Authoring"
-  short_description: "Draft Jira tickets from VRR notes"
-  default_prompt: "Use $vrr-ticket-authoring to turn VRR observations into Jira-ready ticket drafts or update payloads."

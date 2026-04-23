@@ -1,4 +1,0 @@
-interface:
-  display_name: "Pytest Tests"
-  short_description: "Write focused Python pytest coverage."
-  default_prompt: "Use $pytest-tests to add or rewrite focused pytest-based unit or integration tests for the current code change."

@@ -238,3 +238,17 @@ prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.c
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_robots", "branch", "--show-current"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_agents", "branch", "--show-current"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src", "branch", "--show-current"], decision="allow")
+
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_breakpack", "diff"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_breakpack_deployment", "diff"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_maunakea_breakpack", "diff"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_sunflower_breakpack", "diff"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_britton_breakpack", "diff"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_huron_breakpack", "diff"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_washington_breakpack", "diff"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_core", "diff"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_peripherals", "diff"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_robots", "diff"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_agents", "diff"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src", "diff"], decision="allow")
+

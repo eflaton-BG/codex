@@ -252,3 +252,17 @@ prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.c
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_agents", "diff"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src", "diff"], decision="allow")
 
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_breakpack", "log"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_breakpack_deployment", "log"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_maunakea_breakpack", "log"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_sunflower_breakpack", "log"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_britton_breakpack", "log"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_huron_breakpack", "log"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_washington_breakpack", "log"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_core", "log"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_peripherals", "log"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_robots", "log"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_agents", "log"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src", "log"], decision="allow")
+
+

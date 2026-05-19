@@ -1,0 +1,4 @@
+prefix_rule(pattern=["/usr/local/bin/kubectl", "get"], decision="allow")
+prefix_rule(pattern=["/usr/local/bin/kubectl", "logs"], decision="allow")
+prefix_rule(pattern=["/usr/local/bin/kubectl", "port-forward"], decision="allow")
+

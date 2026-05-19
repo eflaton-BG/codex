@@ -15,6 +15,7 @@ prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.c
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_peripherals", "fetch"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_robots", "fetch"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_agents", "fetch"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_sandbox", "fetch"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src", "fetch"], decision="allow")
 
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_breakpack", "pull"], decision="allow")
@@ -28,6 +29,7 @@ prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.c
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_peripherals", "pull"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_robots", "pull"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_agents", "pull"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_sandbox", "pull"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src", "pull"], decision="allow")
 
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_breakpack", "checkout"], decision="allow")
@@ -41,6 +43,7 @@ prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.c
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_peripherals", "checkout"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_robots", "checkout"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_agents", "checkout"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_sandbox", "checkout"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src", "checkout"], decision="allow")
 
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_breakpack", "rev-parse"], decision="allow")
@@ -54,6 +57,7 @@ prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.c
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_peripherals", "rev-parse"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_robots", "rev-parse"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_agents", "rev-parse"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_sandbox", "rev-parse"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src", "rev-parse"], decision="allow")
 
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_breakpack", "rev-list"], decision="allow")
@@ -67,6 +71,7 @@ prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.c
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_peripherals", "rev-list"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_robots", "rev-list"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_agents", "rev-list"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_sandbox", "rev-list"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src", "rev-list"], decision="allow")
 
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_breakpack", "show-ref"], decision="allow")
@@ -80,6 +85,7 @@ prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.c
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_peripherals", "show-ref"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_robots", "show-ref"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_agents", "show-ref"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_sandbox", "show-ref"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src", "show-ref"], decision="allow")
 
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_breakpack", "add"], decision="allow")
@@ -93,6 +99,7 @@ prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.c
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_peripherals", "add"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_robots", "add"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_agents", "add"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_sandbox", "add"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src", "add"], decision="allow")
 
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_breakpack", "commit"], decision="allow")
@@ -107,6 +114,7 @@ prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.c
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_peripherals", "commit"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_robots", "commit"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_agents", "commit"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_sandbox", "commit"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src", "commit"], decision="allow")
 
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_breakpack", "push"], decision="allow")
@@ -120,6 +128,7 @@ prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.c
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_peripherals", "push"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_robots", "push"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_agents", "push"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_sandbox", "push"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src", "push"], decision="allow")
 
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_breakpack", "ls-tree"], decision="allow")
@@ -133,6 +142,7 @@ prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.c
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_peripherals", "ls-tree"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_robots", "ls-tree"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_agents", "ls-tree"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_sandbox", "ls-tree"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src", "ls-tree"], decision="allow")
 
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_breakpack", "remote", "get-url"], decision="allow")
@@ -146,6 +156,7 @@ prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.c
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_peripherals", "remote", "get-url"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_robots", "remote", "get-url"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_agents", "remote", "get-url"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_sandbox", "remote", "get-url"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src", "remote", "get-url"], decision="allow")
 
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_breakpack", "remote", "-v"], decision="allow")
@@ -159,6 +170,7 @@ prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.c
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_peripherals", "remote", "-v"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_robots", "remote", "-v"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_agents", "remote", "-v"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_sandbox", "remote", "-v"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src", "remote", "-v"], decision="allow")
 
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_breakpack", "branch", "--all", "--list"], decision="allow")
@@ -172,6 +184,7 @@ prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.c
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_peripherals", "branch", "--all", "--list"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_robots", "branch", "--all", "--list"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_agents", "branch", "--all", "--list"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_sandbox", "branch", "--all", "--list"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src", "branch", "--all", "--list"], decision="allow")
 
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_breakpack", "branch", "-a", "--list"], decision="allow")
@@ -185,6 +198,7 @@ prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.c
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_peripherals", "branch", "-a", "--list"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_robots", "branch", "-a", "--list"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_agents", "branch", "-a", "--list"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_sandbox", "branch", "-a", "--list"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src", "branch", "-a", "--list"], decision="allow")
 
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_breakpack", "grep", "-n"], decision="allow")
@@ -198,6 +212,7 @@ prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.c
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_peripherals", "grep", "-n"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_robots", "grep", "-n"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_agents", "grep", "-n"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_sandbox", "grep", "-n"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src", "grep", "-n"], decision="allow")
 
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_breakpack", "ls-files"], decision="allow")
@@ -211,6 +226,7 @@ prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.c
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_peripherals", "ls-files"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_robots", "ls-files"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_agents", "ls-files"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_sandbox", "ls-files"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src", "ls-files"], decision="allow")
 
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_breakpack", "status"], decision="allow")
@@ -224,6 +240,7 @@ prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.c
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_peripherals", "status"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_robots", "status"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_agents", "status"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_sandbox", "status"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src", "status"], decision="allow")
 
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_breakpack", "branch", "--show-current"], decision="allow")
@@ -237,6 +254,7 @@ prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.c
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_peripherals", "branch", "--show-current"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_robots", "branch", "--show-current"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_agents", "branch", "--show-current"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_sandbox", "branch", "--show-current"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src", "branch", "--show-current"], decision="allow")
 
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_breakpack", "diff"], decision="allow")
@@ -250,6 +268,7 @@ prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.c
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_peripherals", "diff"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_robots", "diff"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_agents", "diff"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_sandbox", "diff"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src", "diff"], decision="allow")
 
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_breakpack", "log"], decision="allow")
@@ -263,6 +282,7 @@ prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.c
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_peripherals", "log"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_robots", "log"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_agents", "log"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_sandbox", "log"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src", "log"], decision="allow")
 
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_breakpack", "stash"], decision="allow")
@@ -276,6 +296,7 @@ prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.c
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_peripherals", "stash"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_robots", "stash"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_agents", "stash"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_sandbox", "stash"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src", "stash"], decision="allow")
 
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_breakpack", "show"], decision="allow")
@@ -289,5 +310,20 @@ prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.c
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_peripherals", "show"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_robots", "show"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_agents", "show"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_sandbox", "show"], decision="allow")
 prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src", "show"], decision="allow")
+
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_breakpack", "branch", "--contains"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_breakpack_deployment", "branch", "--contains"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_maunakea_breakpack", "branch", "--contains"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_sunflower_breakpack", "branch", "--contains"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_britton_breakpack", "branch", "--contains"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_huron_breakpack", "branch", "--contains"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_washington_breakpack", "branch", "--contains"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_core", "branch", "--contains"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_peripherals", "branch", "--contains"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_robots", "branch", "--contains"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_agents", "branch", "--contains"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_sandbox", "branch", "--contains"], decision="allow")
+prefix_rule(pattern=["/usr/bin/git", "-C", "/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src", "branch", "--contains"], decision="allow")
 

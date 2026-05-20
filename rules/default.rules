@@ -11,7 +11,10 @@ prefix_rule(pattern=["/usr/bin/grep"], decision="allow")
 prefix_rule(pattern=["/usr/bin/diff"], decision="allow")
 prefix_rule(pattern=["/usr/bin/curl"], decision="allow")
 prefix_rule(pattern=["/usr/bin/sed"], decision="allow")
+prefix_rule(pattern=["/usr/bin/which"], decision="allow")
 
 prefix_rule(pattern=["/home/ezekiel.flaton@berkshiregrey.com/.codex/skills/vrr-ticket-authoring/scripts/extract_box_vrr_to_file.sh"], decision="allow")
 prefix_rule(pattern=["/home/ezekiel.flaton@berkshiregrey.com/.codex/skills/vrr-ticket-authoring/scripts/update_box_vrr_status.sh"], decision="allow")
 
+prefix_rule(pattern=["/usr/bin/wc"], decision="allow")
+prefix_rule(pattern=["/usr/bin/python3", "/tmp/qwen-vl-caption-benchmark/run_caption_benchmark.py"], decision="allow")

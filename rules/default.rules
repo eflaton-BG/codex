@@ -18,3 +18,5 @@ prefix_rule(pattern=["/home/ezekiel.flaton@berkshiregrey.com/.codex/skills/vrr-t
 
 prefix_rule(pattern=["/usr/bin/wc"], decision="allow")
 prefix_rule(pattern=["/usr/bin/python3", "/tmp/qwen-vl-caption-benchmark/run_caption_benchmark.py"], decision="allow")
+prefix_rule(pattern=["/usr/local/bin/kustomize", "build"], decision="allow")
+prefix_rule(pattern=["/usr/bin/pwd"], decision="allow")

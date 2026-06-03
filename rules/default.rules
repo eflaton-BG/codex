@@ -23,3 +23,4 @@ prefix_rule(pattern=["/usr/bin/pwd"], decision="allow")
 prefix_rule(pattern=["/tmp/codex_apply_patch.sh"], decision="allow")
 prefix_rule(pattern=["/usr/bin/patch"], decision="allow")
 prefix_rule(pattern=["/usr/bin/patch", "--batch", "--forward", "-p0"], decision="allow")
+

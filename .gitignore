@@ -2,12 +2,17 @@
 .tmp/
 auth.json
 cache/
+cloud-config-bundle-cache.json
 cloud-requirements-cache.json
+config.toml.orig
+goals_1*
 history.jsonl
+installation_id
 log/
 logs_1*
 logs_2*
 memories/
+memories_1*
 models_cache.json
 sessions/
 shell_snapshots/

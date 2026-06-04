@@ -1,8 +1,8 @@
 {
   "signed_payload": {
     "version": 1,
-    "cached_at": "2026-06-04T17:12:36.566989684Z",
-    "expires_at": "2026-06-04T17:42:36.566989684Z",
+    "cached_at": "2026-06-04T17:22:36.998460625Z",
+    "expires_at": "2026-06-04T17:52:36.998460625Z",
     "chatgpt_user_id": "user-JNVTE0AW1J40aiKarqjOevAP",
     "account_id": "3bdb8fd3-0e01-4b00-9332-576653104893",
     "bundle": {
@@ -14,5 +14,5 @@
       }
     }
   },
-  "signature": "z7dN05q45kb0EoWAsvy4X8lPP76uofB/IN9NDxO6FpU="
+  "signature": "tmyWhWd9xZsFG4zDA2vmda/r+V7+rd+7CucT/SfUmmc="
 }

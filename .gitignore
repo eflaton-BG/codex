@@ -3,7 +3,6 @@
 auth.json
 cache/
 cloud-requirements-cache.json
-config.toml
 history.jsonl
 log/
 logs_1*

@@ -21,6 +21,12 @@ trust_level = "trusted"
 [projects."/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src"]
 trust_level = "trusted"
 
+[projects."/home/ezekiel.flaton/devel/colcon_ws"]
+trust_level = "trusted"
+
+[projects."/home/ezekiel.flaton/devel/colcon_ws/src"]
+trust_level = "trusted"
+
 [features]
 rmcp_client = true
 terminal_resize_reflow = true
@@ -33,6 +39,12 @@ fast_default_opt_out = true
 "gpt-5.3-codex" = "gpt-5.4"
 
 [plugins."slack@openai-curated"]
+enabled = true
+
+[plugins."atlassian-rovo@openai-curated"]
+enabled = true
+
+[plugins."box@openai-curated"]
 enabled = true
 
 [tui.model_availability_nux]

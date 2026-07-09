@@ -25,3 +25,5 @@ prefix_rule(pattern=["/usr/bin/patch"], decision="allow")
 prefix_rule(pattern=["/usr/bin/patch", "--batch", "--forward", "-p0"], decision="allow")
 
 prefix_rule(pattern=["/usr/local/bin/kubectl", "--kubeconfig"], decision="allow")
+prefix_rule(pattern=["/home/ezekiel.flaton/devel/colcon_ws/src/bg_agents/codex_skills_library/rps/vrr-ticket-authoring/scripts/extract_box_vrr_to_file.sh"], decision="allow")
+prefix_rule(pattern=["/home/ezekiel.flaton/devel/colcon_ws/src/bg_agents/codex_skills_library/rps/update_box_vrr_status.sh"], decision="allow")

@@ -7,7 +7,7 @@ if [[ $# -lt 1 ]]; then
 fi
 
 BG_VAULT_ELASTIC_DIR="${BG_VAULT_ELASTIC_DIR:-$HOME/bg-vault-client/bg_vault_elastic}"
-BG_ELASTIC_VENV="${BG_ELASTIC_VENV:-/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/.venv}"
+BG_ELASTIC_VENV="${BG_ELASTIC_VENV:-$HOME/bg/myenv}"
 BG_ELASTIC_PYTHON="${BG_ELASTIC_PYTHON:-${BG_ELASTIC_VENV}/bin/python}"
 
 if [[ ! -d "${BG_VAULT_ELASTIC_DIR}" ]]; then

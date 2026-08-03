@@ -1,28 +1,5 @@
-model = "gpt-5.5"
+model = "gpt-5.6-sol"
 model_reasoning_effort = "high"
-[projects."/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_washington_breakpack"]
-trust_level = "trusted"
-
-[projects."/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_core"]
-trust_level = "trusted"
-
-[projects."/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws"]
-trust_level = "trusted"
-
-[projects."/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/docker-app"]
-trust_level = "trusted"
-
-[projects."/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_breakpack"]
-trust_level = "trusted"
-
-[projects."/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src/bg_breakpack_deployment"]
-trust_level = "trusted"
-
-[projects."/home/ezekiel.flaton@berkshiregrey.com/devel/colcon_ws/src"]
-trust_level = "trusted"
-
-[projects."/home/ezekiel.flaton/devel/colcon_ws"]
-trust_level = "trusted"
 
 [projects."/home/ezekiel.flaton/devel/colcon_ws/src"]
 trust_level = "trusted"
@@ -50,9 +27,8 @@ enabled = true
 [tui.model_availability_nux]
 "gpt-5.5" = 4
 
-[mcp_servers.atlassian]
-# Previous setup, kept for quick revert:
-command = "npx"
-args = ["-y", "mcp-remote", "https://mcp.atlassian.com/v1/mcp", "--transport", "http-only"]
-startup_timeout_sec = 30
+#[mcp_servers.atlassian]
+#command = "npx"
+#args = ["-y", "mcp-remote", "https://mcp.atlassian.com/v1/mcp", "--transport", "http-only"]
+#startup_timeout_sec = 30
 

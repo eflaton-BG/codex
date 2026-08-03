@@ -1,0 +1,4 @@
+interface:
+  display_name: "BGA Connections"
+  short_description: "Use approved platform connections from local Codex"
+  default_prompt: "Use $bga-connections to list my available BGA connections and inspect the relevant permissions."

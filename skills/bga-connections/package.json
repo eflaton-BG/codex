@@ -1,0 +1,24 @@
+{
+  "name": "bga-connections",
+  "version": "1.4.1-prod",
+  "supportedPlatforms": ["linux", "macos", "windows"],
+  "entrypoints": {
+    "linux": "install.sh",
+    "macos": "install-macos.sh",
+    "windows": "install.ps1"
+  },
+  "commands": {
+    "linux": {
+      "install": "curl -fsSL 'https://agents-gateway.berkshiregrey.com/ai-gateway/install/bga-connections/versions/1.4.1-prod/entrypoints/install.sh' | sudo env CODEX_HOME=\"${CODEX_HOME:-$HOME/.codex}\" bash",
+      "uninstall": "curl -fsSL 'https://agents-gateway.berkshiregrey.com/ai-gateway/install/bga-connections/versions/1.4.1-prod/entrypoints/install.sh' | sudo env CODEX_HOME=\"${CODEX_HOME:-$HOME/.codex}\" bash -s -- --undo"
+    },
+    "macos": {
+      "install": "curl -fsSL 'https://agents-gateway.berkshiregrey.com/ai-gateway/install/bga-connections/versions/1.4.1-prod/entrypoints/install-macos.sh' | sudo env BGA_CODEX_ENV_HOME=\"$HOME\" CODEX_HOME=\"${CODEX_HOME:-$HOME/.codex}\" bash",
+      "uninstall": "curl -fsSL 'https://agents-gateway.berkshiregrey.com/ai-gateway/install/bga-connections/versions/1.4.1-prod/entrypoints/install-macos.sh' | sudo env BGA_CODEX_ENV_HOME=\"$HOME\" CODEX_HOME=\"${CODEX_HOME:-$HOME/.codex}\" bash -s -- --undo"
+    },
+    "windows": {
+      "install": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"iex (irm 'https://agents-gateway.berkshiregrey.com/ai-gateway/install/bga-connections/versions/1.4.1-prod/entrypoints/install.ps1')\"",
+      "uninstall": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"& ([scriptblock]::Create((irm 'https://agents-gateway.berkshiregrey.com/ai-gateway/install/bga-connections/versions/1.4.1-prod/entrypoints/install.ps1'))) -Undo\""
+    }
+  }
+}

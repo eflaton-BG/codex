@@ -1,0 +1,4 @@
+interface:
+  display_name: "Delegate Task"
+  short_description: "Route and supervise efficient subagent work"
+  default_prompt: "Use $delegate-task to delegate this task to the appropriate Luna, Terra, or Sol subagent."

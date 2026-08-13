@@ -37,3 +37,5 @@ prefix_rule(pattern=["/usr/bin/env", "BOX_TOOLKIT_REPO=/tmp/codex-box-toolkit", 
 prefix_rule(pattern=["/usr/bin/getent", "hosts"], decision="allow")
 prefix_rule(pattern=["/usr/bin/gh", "pr", "checks"], decision="allow")
 prefix_rule(pattern=["/usr/bin/mkdir", "-p", "/home/ezekiel.flaton/devel/colcon_ws/tmp/codex/worktrees"], decision="allow")
+prefix_rule(pattern=["/usr/bin/env", "BOX_TOOLKIT_REPO=/tmp/codex-box-toolkit", "UV_BIN=/tmp/codex-box-uv-shim", "/home/ezekiel.flaton/devel/colcon_ws/src/bg_agents/codex_skills_library/rps/vrr-ticket-authoring/scripts/extract_box_vrr_to_file.sh"], decision="allow")
+prefix_rule(pattern=["/usr/bin/env", "BOX_TOOLKIT_REPO=/tmp/codex-box-toolkit", "UV_BIN=/tmp/codex-box-toolkit/uv", "/home/ezekiel.flaton/devel/colcon_ws/src/bg_agents/codex_skills_library/rps/vrr-ticket-authoring/scripts/extract_box_vrr_to_file.sh"], decision="allow")

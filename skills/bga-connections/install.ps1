@@ -1,7 +1,7 @@
 param([switch]$Undo)
 
 $ErrorActionPreference = 'Stop'
-$ManifestUrl = 'https://agents-gateway.berkshiregrey.com/ai-gateway/install/bga-connections/manifest.json'
+$ManifestUrl = '{{MANIFEST_URL}}'
 $ConfigDir = if ($env:BGA_CODEX_CONFIG_DIR) {
     $env:BGA_CODEX_CONFIG_DIR
 } else {
@@ -79,8 +79,11 @@ try {
             'name = "BG AI Gateway"'
             ('base_url = "{0}/codex/v1"' -f $GatewayBaseUrl.TrimEnd('/'))
             'wire_api = "responses"'
-            'env_key = "BG_AI_GATEWAY_API_KEY"'
-            'supports_websockets = true'
+            'supports_websockets = false'
+            ''
+            '[model_providers.bg_ai_gateway.auth]'
+            'command = "powershell.exe"'
+            'args = ["-NoProfile", "-NonInteractive", "-Command", "[Console]::Out.Write([Environment]::GetEnvironmentVariable($args[0]))", "BG_AI_GATEWAY_API_KEY"]'
         ) | Set-Content $Config -Encoding utf8
     }
 
@@ -226,6 +229,21 @@ function Read-ApiKey {
     $apiKey
 }
 
+function Test-ApiKey {
+    param(
+        [string]$GatewayBaseUrl,
+        [string]$ApiKey
+    )
+
+    try {
+        Invoke-RestMethod `
+            -Uri ($GatewayBaseUrl.TrimEnd('/') + '/v1/models') `
+            -Headers @{ Authorization = "Bearer $ApiKey" } | Out-Null
+    } catch {
+        throw 'BG AI Gateway API key validation failed. Verify the key and Gateway connectivity, then try again.'
+    }
+}
+
 function Remove-Install {
     Invoke-MachineConfigChange -Undo
     Remove-Item $SkillDir -Recurse -Force -ErrorAction SilentlyContinue
@@ -241,8 +259,20 @@ function Remove-Install {
         $null,
         [EnvironmentVariableTarget]::User
     )
+    [Environment]::SetEnvironmentVariable(
+        'ANTHROPIC_BASE_URL',
+        $null,
+        [EnvironmentVariableTarget]::User
+    )
+    [Environment]::SetEnvironmentVariable(
+        'ANTHROPIC_AUTH_TOKEN',
+        $null,
+        [EnvironmentVariableTarget]::User
+    )
     Remove-Item Env:BG_AI_GATEWAY_API_KEY -ErrorAction SilentlyContinue
     Remove-Item Env:BG_AI_GATEWAY_BASE_URL -ErrorAction SilentlyContinue
+    Remove-Item Env:ANTHROPIC_BASE_URL -ErrorAction SilentlyContinue
+    Remove-Item Env:ANTHROPIC_AUTH_TOKEN -ErrorAction SilentlyContinue
 
     $codex = Find-CodexCommand
     if ($codex) {
@@ -268,6 +298,7 @@ if (-not $manifest.version -or -not $manifest.sha256 -or -not $manifest.gatewayB
 
 $apiKey = Read-ApiKey
 $gatewayBaseUrl = ([string]$manifest.gatewayBaseUrl).TrimEnd('/')
+Test-ApiKey -GatewayBaseUrl $gatewayBaseUrl -ApiKey $apiKey
 $temp = Join-Path (
     [IO.Path]::GetTempPath()
 ) ('bga-connections-' + [Guid]::NewGuid().ToString('N'))
@@ -336,8 +367,20 @@ try {
         $gatewayBaseUrl,
         [EnvironmentVariableTarget]::User
     )
+    [Environment]::SetEnvironmentVariable(
+        'ANTHROPIC_BASE_URL',
+        $gatewayBaseUrl,
+        [EnvironmentVariableTarget]::User
+    )
+    [Environment]::SetEnvironmentVariable(
+        'ANTHROPIC_AUTH_TOKEN',
+        $apiKey,
+        [EnvironmentVariableTarget]::User
+    )
     $env:BG_AI_GATEWAY_API_KEY = $apiKey
     $env:BG_AI_GATEWAY_BASE_URL = $gatewayBaseUrl
+    $env:ANTHROPIC_BASE_URL = $gatewayBaseUrl
+    $env:ANTHROPIC_AUTH_TOKEN = $apiKey
 
     $codex = Find-CodexCommand
     if ($codex) {

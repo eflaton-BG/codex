@@ -73,11 +73,18 @@ The script emits `model`, `reasoning_effort`, `fork_context`, and a compact `mes
 1. Discover the multi-agent tools with `tool_search` when they are not already loaded.
 2. Spawn with the exact generated model ID. Use medium reasoning unless the task clearly warrants another effort.
 3. Follow workspace-specific coordination, worktree, logging, approval, and heartbeat rules.
-4. Do meaningful non-overlapping coordinator work while workers run.
-5. Wait only when the next critical-path action requires the result.
-6. Review the worker's evidence rather than repeating the delegated task.
-7. Send corrections to the same worker when they remain within its assigned scope.
-8. Close completed or abandoned agents promptly.
+4. Immediately after spawning any worker, give the user a copy-paste command to follow the coordination log. Use the actual coordination-log path when one is configured; otherwise provide:
+
+   ```bash
+   /usr/bin/tail -F /tmp/codex-session-notes/latest.md
+   ```
+
+   Provide log-tailing instructions for every delegated run, even when the user did not separately request progress details.
+5. Do meaningful non-overlapping coordinator work while workers run.
+6. Wait only when the next critical-path action requires the result.
+7. Review the worker's evidence rather than repeating the delegated task.
+8. Send corrections to the same worker when they remain within its assigned scope.
+9. Close completed or abandoned agents promptly.
 
 ## Safety
 

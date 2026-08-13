@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-manifest_url='https://agents-gateway.berkshiregrey.com/ai-gateway/install/bga-connections/manifest.json'
+manifest_url='{{MANIFEST_URL}}'
 undo=false
 [[ "${1:-}" == "--undo" ]] && undo=true
 [[ "$#" -le 1 ]] || { echo "Unknown option: ${2:-}" >&2; exit 2; }
@@ -54,11 +54,51 @@ install_shell_sources() {
   done
 }
 
+write_codex_env_key() {
+  local env_file="${codex_home}/.env"
+  local temp
+  [[ ! -L "$env_file" ]] || { echo "Refusing to replace symlink ${env_file}." >&2; return 1; }
+  install -d -m 0700 "$codex_home"
+  temp="$(mktemp "${codex_home}/.env.tmp.XXXXXX")"
+  if [[ -f "$env_file" ]] && ! awk '!/^[[:space:]]*(export[[:space:]]+)?BG_AI_GATEWAY_API_KEY[[:space:]]*=/' "$env_file" >"$temp"; then
+    rm -f "$temp"
+    return 1
+  fi
+  printf 'BG_AI_GATEWAY_API_KEY=%s\n' "$api_key" >>"$temp"
+  chmod 0600 "$temp"
+  if ! mv -f "$temp" "$env_file"; then
+    rm -f "$temp"
+    return 1
+  fi
+}
+
+remove_codex_env_key() {
+  local env_file="${codex_home}/.env"
+  local temp
+  [[ -f "$env_file" ]] || return 0
+  [[ ! -L "$env_file" ]] || { echo "Refusing to modify symlink ${env_file}." >&2; return 1; }
+  temp="$(mktemp "${codex_home}/.env.tmp.XXXXXX")"
+  if ! awk '!/^[[:space:]]*(export[[:space:]]+)?BG_AI_GATEWAY_API_KEY[[:space:]]*=/' "$env_file" >"$temp"; then
+    rm -f "$temp"
+    return 1
+  fi
+  if [[ -s "$temp" ]]; then
+    chmod 0600 "$temp"
+    if ! mv -f "$temp" "$env_file"; then
+      rm -f "$temp"
+      return 1
+    fi
+  else
+    rm -f "$temp" "$env_file"
+  fi
+}
+
 remove_api_key_sources() {
   local profile
   for profile in "${target_home}/.bashrc" "${target_home}/.zshrc"; do
     remove_managed_block "$profile"
   done
+  remove_codex_env_key
   rm -f \
     "${target_home}/.config/bg-ai-gateway/env.sh" \
     "${target_home}/.config/environment.d/bg-ai-gateway.conf" \
@@ -74,7 +114,7 @@ remove_install() {
   rm -rf "$skill_dir"
   remove_api_key_sources
   echo "Removed BG AI Gateway Codex setup."
-  echo "Restart the shell and Codex, or run: unset BG_AI_GATEWAY_API_KEY BG_AI_GATEWAY_BASE_URL"
+  echo "Restart the shell and Codex, or run: unset BG_AI_GATEWAY_API_KEY BG_AI_GATEWAY_BASE_URL ANTHROPIC_BASE_URL ANTHROPIC_AUTH_TOKEN"
 }
 
 [[ "$undo" == true ]] && { remove_install; exit 0; }
@@ -102,6 +142,13 @@ if [[ -z "$api_key" ]]; then
   echo >/dev/tty
 fi
 [[ -n "$api_key" ]] || { echo "API key is required." >&2; exit 1; }
+[[ "$api_key" != *$'\n'* && "$api_key" != *$'\r'* ]] || { echo "API key must not contain a newline." >&2; exit 1; }
+if ! curl -fsS -o /dev/null \
+  -H "Authorization: Bearer ${api_key}" \
+  "${gateway_base_url%/}/v1/models"; then
+  echo "BG AI Gateway API key validation failed. Verify the key and Gateway connectivity, then try again." >&2
+  exit 1
+fi
 
 temp_root="$(mktemp -d)"
 cleanup() { rm -rf "$temp_root"; }
@@ -151,14 +198,20 @@ model_provider = "bg_ai_gateway"
 name = "BG AI Gateway"
 base_url = "${gateway_base_url%/}/codex/v1"
 wire_api = "responses"
-env_key = "BG_AI_GATEWAY_API_KEY"
-supports_websockets = true
+supports_websockets = false
+
+[model_providers.bg_ai_gateway.auth]
+command = "/bin/sh"
+args = ["-c", "printenv \"\$1\"", "bga-codex-auth", "BG_AI_GATEWAY_API_KEY"]
 EOF
 install -m 0644 "$tmp_config" "$config_path"
 install -d -m 0700 "${target_home}/.config/bg-ai-gateway" "${target_home}/.config/environment.d"
-printf 'export BG_AI_GATEWAY_API_KEY=%q\nexport BG_AI_GATEWAY_BASE_URL=%q\n' "$api_key" "$gateway_base_url" >"${target_home}/.config/bg-ai-gateway/env.sh"
-printf 'BG_AI_GATEWAY_API_KEY=%s\nBG_AI_GATEWAY_BASE_URL=%s\n' "$api_key" "$gateway_base_url" >"${target_home}/.config/environment.d/bg-ai-gateway.conf"
+printf 'export BG_AI_GATEWAY_API_KEY=%q\nexport BG_AI_GATEWAY_BASE_URL=%q\nexport ANTHROPIC_BASE_URL=%q\nexport ANTHROPIC_AUTH_TOKEN=%q\n' \
+  "$api_key" "$gateway_base_url" "$gateway_base_url" "$api_key" >"${target_home}/.config/bg-ai-gateway/env.sh"
+printf 'BG_AI_GATEWAY_API_KEY=%s\nBG_AI_GATEWAY_BASE_URL=%s\nANTHROPIC_BASE_URL=%s\nANTHROPIC_AUTH_TOKEN=%s\n' \
+  "$api_key" "$gateway_base_url" "$gateway_base_url" "$api_key" >"${target_home}/.config/environment.d/bg-ai-gateway.conf"
 chmod 0600 "${target_home}/.config/bg-ai-gateway/env.sh" "${target_home}/.config/environment.d/bg-ai-gateway.conf"
+write_codex_env_key
 install_shell_sources
 if [[ "$EUID" -eq 0 && -n "$target_user" && "$target_user" != root ]]; then
   chown -R "${target_user}:" "$codex_home" "${target_home}/.config/bg-ai-gateway" "${target_home}/.config/environment.d" 2>/dev/null || true

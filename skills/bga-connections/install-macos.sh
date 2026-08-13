@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-manifest_url='https://agents-gateway.berkshiregrey.com/ai-gateway/install/bga-connections/manifest.json'
+manifest_url='{{MANIFEST_URL}}'
 undo=false
 [[ "${1:-}" == "--undo" ]] && undo=true
 [[ "$#" -le 1 ]] || { echo "Unknown option: ${2:-}" >&2; exit 2; }
@@ -128,7 +128,7 @@ install_launch_agent() {
   <array>
     <string>/bin/bash</string>
     <string>-c</string>
-    <string>[ -f "$HOME/.config/bg-ai-gateway/env.sh" ] &amp;&amp; . "$HOME/.config/bg-ai-gateway/env.sh" &amp;&amp; /bin/launchctl setenv BG_AI_GATEWAY_API_KEY "$BG_AI_GATEWAY_API_KEY" &amp;&amp; /bin/launchctl setenv BG_AI_GATEWAY_BASE_URL "$BG_AI_GATEWAY_BASE_URL"</string>
+    <string>[ -f "$HOME/.config/bg-ai-gateway/env.sh" ] &amp;&amp; . "$HOME/.config/bg-ai-gateway/env.sh" &amp;&amp; /bin/launchctl setenv BG_AI_GATEWAY_API_KEY "$BG_AI_GATEWAY_API_KEY" &amp;&amp; /bin/launchctl setenv BG_AI_GATEWAY_BASE_URL "$BG_AI_GATEWAY_BASE_URL" &amp;&amp; /bin/launchctl setenv ANTHROPIC_BASE_URL "$ANTHROPIC_BASE_URL" &amp;&amp; /bin/launchctl setenv ANTHROPIC_AUTH_TOKEN "$ANTHROPIC_AUTH_TOKEN"</string>
   </array>
   <key>RunAtLoad</key>
   <true/>
@@ -147,6 +147,8 @@ PLIST
   /bin/launchctl kickstart -k "gui/${uid}/${launch_agent_label}" >/dev/null 2>&1 || true
   launchctl_for_target_user setenv BG_AI_GATEWAY_API_KEY "$api_key" >/dev/null 2>&1 || true
   launchctl_for_target_user setenv BG_AI_GATEWAY_BASE_URL "$gateway_base_url" >/dev/null 2>&1 || true
+  launchctl_for_target_user setenv ANTHROPIC_BASE_URL "$gateway_base_url" >/dev/null 2>&1 || true
+  launchctl_for_target_user setenv ANTHROPIC_AUTH_TOKEN "$api_key" >/dev/null 2>&1 || true
 }
 
 remove_launch_agent() {
@@ -155,6 +157,8 @@ remove_launch_agent() {
   /bin/launchctl bootout "gui/${uid}" "$launch_agent_file" >/dev/null 2>&1 || true
   launchctl_for_target_user unsetenv BG_AI_GATEWAY_API_KEY >/dev/null 2>&1 || true
   launchctl_for_target_user unsetenv BG_AI_GATEWAY_BASE_URL >/dev/null 2>&1 || true
+  launchctl_for_target_user unsetenv ANTHROPIC_BASE_URL >/dev/null 2>&1 || true
+  launchctl_for_target_user unsetenv ANTHROPIC_AUTH_TOKEN >/dev/null 2>&1 || true
   rm -f "$launch_agent_file"
 }
 
@@ -218,6 +222,16 @@ if [[ -z "$api_key" ]]; then
   echo >/dev/tty
 fi
 [[ -n "$api_key" ]] || { echo "API key is required." >&2; exit 1; }
+[[ "$api_key" != *$'\n'* && "$api_key" != *$'\r'* ]] || {
+  echo "API key must not contain a newline." >&2
+  exit 1
+}
+if ! curl -fsS -o /dev/null \
+  -H "Authorization: Bearer ${api_key}" \
+  "${gateway_base_url%/}/v1/models"; then
+  echo "BG AI Gateway API key validation failed. Verify the key and Gateway connectivity, then try again." >&2
+  exit 1
+fi
 
 temp_root="$(mktemp -d)"
 cleanup() {
@@ -288,8 +302,11 @@ model_provider = "bg_ai_gateway"
 name = "BG AI Gateway"
 base_url = "${gateway_base_url%/}/codex/v1"
 wire_api = "responses"
-env_key = "BG_AI_GATEWAY_API_KEY"
-supports_websockets = true
+supports_websockets = false
+
+[model_providers.bg_ai_gateway.auth]
+command = "/bin/sh"
+args = ["-c", "printenv \"\$1\"", "bga-codex-auth", "BG_AI_GATEWAY_API_KEY"]
 EOF
 /usr/bin/install -m 0644 "$temp_root/config.toml" "$config_path"
 
@@ -299,7 +316,9 @@ printf '%s' "$api_key" >"$api_key_file"
 /usr/bin/install -m 0600 /dev/null "$env_file"
 printf '%s\n' \
   'export BG_AI_GATEWAY_API_KEY="$(cat "$HOME/.config/bg-ai-gateway/api-key")"' \
-  "export BG_AI_GATEWAY_BASE_URL=$(printf '%q' "$gateway_base_url")" >"$env_file"
+  "export BG_AI_GATEWAY_BASE_URL=$(printf '%q' "$gateway_base_url")" \
+  "export ANTHROPIC_BASE_URL=$(printf '%q' "$gateway_base_url")" \
+  'export ANTHROPIC_AUTH_TOKEN="$BG_AI_GATEWAY_API_KEY"' >"$env_file"
 install_shell_sources
 
 if [[ "${EUID}" -eq 0 && "$target_user" != root ]]; then

@@ -13,7 +13,7 @@ import urllib.parse
 import urllib.request
 
 DEFAULT_TIMEOUT_SECONDS = 120
-USER_AGENT = "bga-connections/1.1"
+USER_AGENT = "bga-connections/1.5"
 
 
 def fail(message, code=1):
@@ -93,6 +93,13 @@ def read_multipart_file(path):
     if not isinstance(value, list):
         fail("--multipart-json must contain a JSON array of multipart parts.")
     return value
+
+
+def read_json_file(path):
+    try:
+        return json.loads(read_text_file(path))
+    except json.JSONDecodeError as err:
+        fail(f"Invalid JSON in {path}: {err}")
 
 
 def split_named_value(value, option):
@@ -175,6 +182,48 @@ def require_request_target(args):
     if bool(args.path) == bool(args.url):
         fail("Specify exactly one of --path or --url.")
 
+
+def download_to_output(request_path, payload, output, overwrite):
+    output = os.path.abspath(output)
+    if os.path.exists(output) and not overwrite:
+        fail(f"Output file exists: {output}. Pass --overwrite to replace it.")
+    os.makedirs(os.path.dirname(output) or ".", exist_ok=True)
+    with request(request_path, "POST", payload) as res:
+        provider_status = int(res.headers.get("X-BG-Agent-Provider-Status", res.status))
+        if provider_status < 200 or provider_status >= 300:
+            fail(res.read().decode("utf-8", "replace") or f"Provider download failed with HTTP {provider_status}")
+        digest = hashlib.sha256()
+        bytes_written = 0
+        tmp = ""
+        try:
+            with tempfile.NamedTemporaryFile(
+                mode="wb",
+                dir=os.path.dirname(output) or ".",
+                prefix=os.path.basename(output) + ".",
+                suffix=".tmp",
+                delete=False,
+            ) as handle:
+                tmp = handle.name
+                while True:
+                    chunk = res.read(1024 * 1024)
+                    if not chunk:
+                        break
+                    handle.write(chunk)
+                    digest.update(chunk)
+                    bytes_written += len(chunk)
+            os.replace(tmp, output)
+            tmp = ""
+        finally:
+            if tmp and os.path.exists(tmp):
+                os.remove(tmp)
+        print(json.dumps({
+            "bytesWritten": bytes_written,
+            "output": output,
+            "sha256": digest.hexdigest(),
+            "status": provider_status,
+        }, indent=2, sort_keys=True))
+
+
 def main():
     parser = argparse.ArgumentParser(prog="bga-connections")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -200,6 +249,11 @@ def main():
         if name == "download":
             cmd.add_argument("--output", required=True)
             cmd.add_argument("--overwrite", action="store_true")
+    slack_file_download = sub.add_parser("slack-file-download", help="Download a Slack-hosted file as the saved Slack user; not a BG Agents app operation")
+    slack_file_download.add_argument("connection_id")
+    slack_file_download.add_argument("file_id")
+    slack_file_download.add_argument("--output", required=True)
+    slack_file_download.add_argument("--overwrite", action="store_true")
     request_endpoint = sub.add_parser("request-endpoint")
     request_endpoint.add_argument("--provider", required=True)
     request_endpoint.add_argument("--method", required=True)
@@ -207,7 +261,7 @@ def main():
     request_endpoint.add_argument("--url")
     request_endpoint.add_argument("--reason", required=True)
     request_endpoint.add_argument("--tool-context")
-    slack = sub.add_parser("send-slack-message")
+    slack = sub.add_parser("send-slack-message", help="Send a message as the BG Agents Slack app; saved-connection calls act as the user")
     slack.add_argument("--channel", required=True)
     slack.add_argument("--section", action="append", required=True)
     slack.add_argument("--thread-ts")
@@ -218,6 +272,29 @@ def main():
     github.add_argument("--head-sha", required=True)
     github.add_argument("--body", required=True)
     github.add_argument("--explicit-user-request", action="store_true")
+    sub.add_parser("datasets-list")
+    dataset_query = sub.add_parser("datasets-query")
+    dataset_query_source = dataset_query.add_mutually_exclusive_group(required=True)
+    dataset_query_source.add_argument("--sql")
+    dataset_query_source.add_argument("--sql-file")
+    sub.add_parser("datasets-admin-list")
+    for name in ("datasets-admin-create", "datasets-admin-update", "datasets-admin-add-column", "datasets-admin-create-index", "datasets-admin-set-grant"):
+        command = sub.add_parser(name)
+        if name != "datasets-admin-create":
+            command.add_argument("dataset_id")
+        command.add_argument("--json-file", required=True)
+    dataset_delete = sub.add_parser("datasets-admin-delete")
+    dataset_delete.add_argument("dataset_id")
+    dataset_delete.add_argument("--confirmation", required=True)
+    dataset_rename = sub.add_parser("datasets-admin-rename-column")
+    dataset_rename.add_argument("dataset_id")
+    dataset_rename.add_argument("column_name")
+    dataset_rename.add_argument("--name", required=True)
+    dataset_delete_index = sub.add_parser("datasets-admin-delete-index")
+    dataset_delete_index.add_argument("dataset_id")
+    dataset_delete_index.add_argument("index_name")
+    dataset_grants = sub.add_parser("datasets-admin-list-grants")
+    dataset_grants.add_argument("dataset_id")
     args = parser.parse_args()
 
     if args.command == "list":
@@ -229,44 +306,17 @@ def main():
         print_json_response(request(f"/bga/v1/connections/{urllib.parse.quote(args.connection_id)}/call", "POST", call_payload(args)))
     elif args.command == "download":
         require_request_target(args)
-        output = os.path.abspath(args.output)
-        if os.path.exists(output) and not args.overwrite:
-            fail(f"Output file exists: {output}. Pass --overwrite to replace it.")
-        os.makedirs(os.path.dirname(output) or ".", exist_ok=True)
-        with request(f"/bga/v1/connections/{urllib.parse.quote(args.connection_id)}/download", "POST", call_payload(args)) as res:
-            provider_status = int(res.headers.get("X-BG-Agent-Provider-Status", res.status))
-            if provider_status < 200 or provider_status >= 300:
-                fail(res.read().decode("utf-8", "replace") or f"Provider download failed with HTTP {provider_status}")
-            digest = hashlib.sha256()
-            bytes_written = 0
-            tmp = ""
-            try:
-                with tempfile.NamedTemporaryFile(
-                    mode="wb",
-                    dir=os.path.dirname(output) or ".",
-                    prefix=os.path.basename(output) + ".",
-                    suffix=".tmp",
-                    delete=False,
-                ) as handle:
-                    tmp = handle.name
-                    while True:
-                        chunk = res.read(1024 * 1024)
-                        if not chunk:
-                            break
-                        handle.write(chunk)
-                        digest.update(chunk)
-                        bytes_written += len(chunk)
-                os.replace(tmp, output)
-                tmp = ""
-            finally:
-                if tmp and os.path.exists(tmp):
-                    os.remove(tmp)
-            print(json.dumps({
-                "bytesWritten": bytes_written,
-                "output": output,
-                "sha256": digest.hexdigest(),
-                "status": provider_status,
-            }, indent=2, sort_keys=True))
+        download_to_output(f"/bga/v1/connections/{urllib.parse.quote(args.connection_id)}/download", call_payload(args), args.output, args.overwrite)
+    elif args.command == "slack-file-download":
+        workspace_path = args.output.replace("\\", "/")
+        if os.path.isabs(workspace_path):
+            fail("--output must be a workspace-relative path for slack-file-download.")
+        download_to_output(
+            f"/bga/v1/connections/{urllib.parse.quote(args.connection_id)}/slack-files/download",
+            {"fileId": args.file_id, "workspacePath": workspace_path, "overwrite": args.overwrite},
+            args.output,
+            args.overwrite,
+        )
     elif args.command == "request-endpoint":
         require_request_target(args)
         payload = {"provider": args.provider, "method": args.method, "reason": args.reason}
@@ -286,6 +336,41 @@ def main():
         if not args.explicit_user_request:
             fail("--explicit-user-request is required. Ask the user to explicitly request this COMMENT review before posting.")
         print_json_response(request("/bga/v1/platform/github/reviews", "POST", {"owner": args.owner, "repo": args.repo, "pullNumber": args.pull_number, "headSha": args.head_sha, "body": args.body}, {"X-BGA-Explicit-User-Request": "true"}))
+    elif args.command == "datasets-list":
+        print_json_response(request("/bga/v1/datasets"))
+    elif args.command == "datasets-query":
+        sql = args.sql if args.sql is not None else read_text_file(args.sql_file)
+        print_json_response(request("/bga/v1/datasets/query", "POST", {"sql": sql}))
+    elif args.command == "datasets-admin-list":
+        print_json_response(request("/bga/v1/datasets/admin"))
+    elif args.command == "datasets-admin-create":
+        print_json_response(request("/bga/v1/datasets/admin", "POST", read_json_file(args.json_file)))
+    elif args.command == "datasets-admin-update":
+        dataset_id = urllib.parse.quote(args.dataset_id, safe="")
+        print_json_response(request(f"/bga/v1/datasets/admin/{dataset_id}", "PATCH", read_json_file(args.json_file)))
+    elif args.command == "datasets-admin-delete":
+        dataset_id = urllib.parse.quote(args.dataset_id, safe="")
+        print_json_response(request(f"/bga/v1/datasets/admin/{dataset_id}", "DELETE", {"confirmation": args.confirmation}))
+    elif args.command == "datasets-admin-add-column":
+        dataset_id = urllib.parse.quote(args.dataset_id, safe="")
+        print_json_response(request(f"/bga/v1/datasets/admin/{dataset_id}/columns", "POST", read_json_file(args.json_file)))
+    elif args.command == "datasets-admin-rename-column":
+        dataset_id = urllib.parse.quote(args.dataset_id, safe="")
+        column_name = urllib.parse.quote(args.column_name, safe="")
+        print_json_response(request(f"/bga/v1/datasets/admin/{dataset_id}/columns/{column_name}", "PATCH", {"name": args.name}))
+    elif args.command == "datasets-admin-create-index":
+        dataset_id = urllib.parse.quote(args.dataset_id, safe="")
+        print_json_response(request(f"/bga/v1/datasets/admin/{dataset_id}/indexes", "POST", read_json_file(args.json_file)))
+    elif args.command == "datasets-admin-delete-index":
+        dataset_id = urllib.parse.quote(args.dataset_id, safe="")
+        index_name = urllib.parse.quote(args.index_name, safe="")
+        print_json_response(request(f"/bga/v1/datasets/admin/{dataset_id}/indexes/{index_name}", "DELETE"))
+    elif args.command == "datasets-admin-list-grants":
+        dataset_id = urllib.parse.quote(args.dataset_id, safe="")
+        print_json_response(request(f"/bga/v1/datasets/admin/{dataset_id}/grants"))
+    elif args.command == "datasets-admin-set-grant":
+        dataset_id = urllib.parse.quote(args.dataset_id, safe="")
+        print_json_response(request(f"/bga/v1/datasets/admin/{dataset_id}/grants", "PUT", read_json_file(args.json_file)))
 
 if __name__ == "__main__":
     main()

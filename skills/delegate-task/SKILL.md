@@ -50,6 +50,37 @@ Keep context lean:
 - Set `fork_context` to `true` only when conversation history is necessary and cannot be summarized safely.
 - Prefer a generated prompt over repeatedly restating orchestration boilerplate.
 
+## Gate External Access
+
+Subagents run in separate execution sandboxes. They may inherit task context,
+filesystem access, and provider credentials without inheriting the coordinator's
+shell or host-network approvals. `fork_context` controls conversation history,
+not command authorization.
+
+Before spawning work that calls Jira, Slack, GitHub, cloud services, or another
+networked provider:
+
+1. Identify the exact access path the worker will use.
+2. Prefer a purpose-built connector or MCP tool that is directly available to the
+   worker over a shell command that needs host-network escalation.
+3. If the only access path is a networked CLI, confirm that its exact absolute
+   command prefix is already usable in the worker runtime without a new approval.
+4. If that cannot be confirmed, do not delegate the external mutation itself.
+   Delegate preparation and validation of the exact payload, then perform only
+   the final provider write in the coordinator through its existing approved
+   connection.
+
+Do not let a worker discover missing external access after it has started a
+write workflow. Include the chosen connector or command path in the worker
+prompt and instruct the worker not to request user approval. If the path is
+unavailable, it must stop before writing and report a blocker to the
+coordinator.
+
+For BGA Connections CLI work, use the exact absolute command path and run the
+connection-list and permission checks through the same execution route that
+will perform the write. A successful parent-session preflight alone does not
+prove that a delegated worker has the same network authorization.
+
 ## Generate the Worker Prompt
 
 Run the bundled script and use its JSON output as the basis for `spawn_agent`:

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Shinobi Video Download"
+  short_description: "Create validated Shinobi evidence clips"
+  default_prompt: "Choose the site, station, timeframe, cameras, and layout, then run the scripted Shinobi workflow using the tooling backend with local fallback."

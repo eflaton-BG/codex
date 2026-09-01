@@ -40,3 +40,5 @@ prefix_rule(pattern=["/usr/bin/mkdir", "-p", "/home/ezekiel.flaton/devel/colcon_
 prefix_rule(pattern=["/usr/bin/env", "BOX_TOOLKIT_REPO=/tmp/codex-box-toolkit", "UV_BIN=/tmp/codex-box-uv-shim", "/home/ezekiel.flaton/devel/colcon_ws/src/bg_agents/codex_skills_library/rps/vrr-ticket-authoring/scripts/extract_box_vrr_to_file.sh"], decision="allow")
 prefix_rule(pattern=["/usr/bin/env", "BOX_TOOLKIT_REPO=/tmp/codex-box-toolkit", "UV_BIN=/tmp/codex-box-toolkit/uv", "/home/ezekiel.flaton/devel/colcon_ws/src/bg_agents/codex_skills_library/rps/vrr-ticket-authoring/scripts/extract_box_vrr_to_file.sh"], decision="allow")
 prefix_rule(pattern=["/home/ezekiel.flaton/devel/colcon_ws/src/bg_agents/codex_skills_library/rps/vrr-ticket-authoring/scripts/update_box_vrr_status.sh"], decision="allow")
+prefix_rule(pattern=["/usr/bin/python3", "/tmp/analyze_rps_sps_opportunity.py"], decision="allow")
+prefix_rule(pattern=["/usr/bin/python3", "/home/ezekiel.flaton/.codex/skills/shinobi-video-download/scripts/prepare_shinobi_evidence.py"], decision="allow")

@@ -8,3 +8,65 @@
 {"id":"01a043d1-d95c-7bf1-b131-a47e02e61751","thread_name":"Draft concise ticket from Slack","updated_at":"2026-08-27T15:23:52.064477807Z"}
 {"id":"01a04472-b5e4-7841-8eb6-4fba291aa91f","thread_name":"$vrr-ticket-authoring https://berksh","updated_at":"2026-08-27T18:19:28.287157878Z"}
 {"id":"01a04472-b5e4-7841-8eb6-4fba291aa91f","thread_name":"Process VRR ticket markers","updated_at":"2026-08-27T18:19:30.118034459Z"}
+{"id":"01a044e0-68d3-7440-8e2f-48ff5a73c97d","thread_name":"help me test this theory: https://be","updated_at":"2026-08-27T20:19:16.410331528Z"}
+{"id":"01a044e0-68d3-7440-8e2f-48ff5a73c97d","thread_name":"Test the Slack thread theory","updated_at":"2026-08-27T20:19:18.666620447Z"}
+{"id":"01a049c6-325d-7b70-bcff-d61d3023b451","thread_name":"write up the tickets SW needs to do","updated_at":"2026-08-28T19:08:51.759435085Z"}
+{"id":"01a057ca-fa7f-7092-8d4c-a1c97af71b38","thread_name":"do an RCA on RPS25 in pittston and t","updated_at":"2026-08-31T12:29:04.089282632Z"}
+{"id":"01a057ca-fa7f-7092-8d4c-a1c97af71b38","thread_name":"Investigate RPS25 AR1 IR issue","updated_at":"2026-08-31T12:29:06.265889267Z"}
+{"id":"01a057cd-30b5-7a41-9e21-43509f4471ef","thread_name":"RCA why RPS26 in Pittston has the mi","updated_at":"2026-08-31T12:31:17.108914356Z"}
+{"id":"01a057cd-30b5-7a41-9e21-43509f4471ef","thread_name":"Investigate RPS26 missed scans","updated_at":"2026-08-31T12:31:19.410965136Z"}
+{"id":"01a057cd-b1b6-7c12-baff-b7cbafce780b","thread_name":"write a ticket to shut off system le","updated_at":"2026-08-31T12:32:04.387028738Z"}
+{"id":"01a057cd-b1b6-7c12-baff-b7cbafce780b","thread_name":"Disable system IRs from RPS","updated_at":"2026-08-31T12:32:06.687095015Z"}
+{"id":"01a057d1-8bbb-7351-bd3c-8aa5cfc0de64","thread_name":"high frequency of bucket sensor IRs","updated_at":"2026-08-31T12:36:46.265088783Z"}
+{"id":"01a0581d-2b37-7611-b8bf-9e934f00e6d4","thread_name":"write a ticket for failed brdige det","updated_at":"2026-08-31T13:58:44.567561412Z"}
+{"id":"01a0581d-2b37-7611-b8bf-9e934f00e6d4","thread_name":"Investigate RPS28 bridge failure","updated_at":"2026-08-31T13:58:46.592962892Z"}
+{"id":"01a0582c-9eff-78f2-9345-bc16c84b85ce","thread_name":"write a ticket to determine why the","updated_at":"2026-08-31T14:15:42.097687771Z"}
+{"id":"01a05830-e014-7d61-a99b-82f94c141bb8","thread_name":"create a ticket to investigate the I","updated_at":"2026-08-31T14:22:59.697944801Z"}
+{"id":"01a05830-e014-7d61-a99b-82f94c141bb8","thread_name":"Investigate RPS28 bridge IR","updated_at":"2026-08-31T14:23:01.709685914Z"}
+{"id":"01a05861-c1da-7052-894f-663158e885e9","thread_name":"propose additions to my agents.md fi","updated_at":"2026-08-31T15:13:23.327015263Z"}
+{"id":"01a05861-c1da-7052-894f-663158e885e9","thread_name":"Propose AGENTS.md additions","updated_at":"2026-08-31T15:13:26.234408681Z"}
+{"id":"01a05867-55a1-7ee3-b8c9-d0f3fa79f754","thread_name":"find a recent ticket i wrote asking","updated_at":"2026-08-31T15:19:52.94170236Z"}
+{"id":"01a0586d-ee4d-7d91-96b8-14b6a83d7979","thread_name":"write a ticket so that REVS provides","updated_at":"2026-08-31T15:27:29.643269094Z"}
+{"id":"01a0586d-ee4d-7d91-96b8-14b6a83d7979","thread_name":"Raise REVS initial eligibility score","updated_at":"2026-08-31T15:27:31.583508745Z"}
+{"id":"01a0587d-fbb6-7703-bdf0-e654afab160b","thread_name":"find a recent ticket talking about i","updated_at":"2026-08-31T15:44:31.508403686Z"}
+{"id":"01a0587d-fbb6-7703-bdf0-e654afab160b","thread_name":"Add RPS26 before trash-check IR","updated_at":"2026-08-31T15:44:36.935021253Z"}
+{"id":"01a0587e-7a19-7c33-8124-4b8f84baec37","thread_name":"write a ticket to look at retry logi","updated_at":"2026-08-31T15:45:12.395111581Z"}
+{"id":"01a0587e-7a19-7c33-8124-4b8f84baec37","thread_name":"Review trash check retry logic","updated_at":"2026-08-31T15:45:15.123190688Z"}
+{"id":"01a0589e-cf4e-7be0-bc3a-a78eff08e76d","thread_name":"RPS29 in {Pittston at 12:15p. invest","updated_at":"2026-08-31T16:20:54.762374123Z"}
+{"id":"01a0589e-cf4e-7be0-bc3a-a78eff08e76d","thread_name":"Investigate RPS29 cup detachment","updated_at":"2026-08-31T16:20:59.598715379Z"}
+{"id":"01a058b0-f5a2-7da2-a7eb-ece7d773e57e","thread_name":"write a ticket to re-implement RPS a","updated_at":"2026-08-31T16:40:23.73436095Z"}
+{"id":"01a058b0-f5a2-7da2-a7eb-ece7d773e57e","thread_name":"Analyze and restore RPS priority","updated_at":"2026-08-31T16:40:25.713781963Z"}
+{"id":"01a058c7-2540-7b41-a4ce-190dcb7195c8","thread_name":"write a ticket to standardize cup lo","updated_at":"2026-08-31T17:04:18.584972746Z"}
+{"id":"01a058c7-2540-7b41-a4ce-190dcb7195c8","thread_name":"Standardize Wor cup locations","updated_at":"2026-08-31T17:04:20.78730645Z"}
+{"id":"01a058f0-4c4c-7292-a384-764737297528","thread_name":"RPS27. box was physically kicked and","updated_at":"2026-08-31T17:50:19.069083779Z"}
+{"id":"01a058f0-4c4c-7292-a384-764737297528","thread_name":"Investigate RPS27 queue desync","updated_at":"2026-08-31T17:50:23.21178549Z"}
+{"id":"01a05908-4c16-77e3-8012-b9f131f81760","thread_name":"grab the video fo RPS28 losing the c","updated_at":"2026-08-31T18:16:01.934480298Z"}
+{"id":"01a05908-4c16-77e3-8012-b9f131f81760","thread_name":"Grab RPS28 cup loss clip","updated_at":"2026-08-31T18:16:04.688460943Z"}
+{"id":"01a05912-6787-73d1-8ef5-ef906432a824","thread_name":"take a look at wor and the mongospy","updated_at":"2026-08-31T18:26:35.474487455Z"}
+{"id":"01a0594e-86a0-7952-81d7-c67e1aa3a9e1","thread_name":"consider removing the clause in the","updated_at":"2026-08-31T19:32:36.758263721Z"}
+{"id":"01a05978-1a9b-7fd2-96a8-7107606c4215","thread_name":"investigate why this pick and some o","updated_at":"2026-08-31T20:17:46.739854422Z"}
+{"id":"01a05978-1a9b-7fd2-96a8-7107606c4215","thread_name":"Investigate missed top-item picks","updated_at":"2026-08-31T20:17:49.131412702Z"}
+{"id":"01a05984-d4db-70f0-9332-de0d509faad3","thread_name":"find the yaml files referenced here","updated_at":"2026-08-31T20:31:26.238421383Z"}
+{"id":"01a05985-7503-7d00-9a54-da50ef7c922e","thread_name":"please look at pittston's PVCs for i","updated_at":"2026-08-31T20:32:15.261414457Z"}
+{"id":"01a05985-7503-7d00-9a54-da50ef7c922e","thread_name":"Check Pittston image-data PVCs","updated_at":"2026-08-31T20:32:17.226756665Z"}
+{"id":"01a05cd3-7758-7f71-b8da-1fdc90594379","thread_name":"create tickets for the first two bul","updated_at":"2026-09-01T11:56:03.596113107Z"}
+{"id":"01a05cd3-7758-7f71-b8da-1fdc90594379","thread_name":"Create first two Slack tickets","updated_at":"2026-09-01T11:56:06.925780678Z"}
+{"id":"01a05cdf-7f8f-7371-90f9-a63f18e1d2dc","thread_name":"write a ticket for the weight estima","updated_at":"2026-09-01T12:10:19.047076401Z"}
+{"id":"01a05cdf-7f8f-7371-90f9-a63f18e1d2dc","thread_name":"Investigate RPS29 putback swings","updated_at":"2026-09-01T12:10:21.86652281Z"}
+{"id":"01a05cf6-40d9-7141-87a2-3e5cc96748f8","thread_name":"look into b'2986500_VP_8 and why we'","updated_at":"2026-09-01T12:34:39.472806013Z"}
+{"id":"01a05cf6-40d9-7141-87a2-3e5cc96748f8","thread_name":"Investigate b'2986500_VP_8 errors","updated_at":"2026-09-01T12:34:41.147515407Z"}
+{"id":"01a05cf8-e148-7813-9e7f-68effc9d7835","thread_name":"look at RPS29 and the recent bridge","updated_at":"2026-09-01T12:37:15.443662863Z"}
+{"id":"01a05d28-3410-7863-a57a-24c8765cabcd","thread_name":"do an RCA of this https://berkshireg","updated_at":"2026-09-01T13:28:37.077486965Z"}
+{"id":"01a05d28-3410-7863-a57a-24c8765cabcd","thread_name":"Perform Slack incident RCA","updated_at":"2026-09-01T13:28:41.300527381Z"}
+{"id":"01a05d2d-256c-7f02-8439-dd686df04856","thread_name":"investigate this https://berkshiregr","updated_at":"2026-09-01T13:33:57.240070892Z"}
+{"id":"01a05d2d-256c-7f02-8439-dd686df04856","thread_name":"Investigate RSPS-7180","updated_at":"2026-09-01T13:33:59.307113503Z"}
+{"id":"01a05d34-da53-7af2-a425-57de6c70a34c","thread_name":"write a ticket for this. RCA style.","updated_at":"2026-09-01T13:42:58.26624918Z"}
+{"id":"01a05d3e-2248-7bc1-b37a-d8a6b1c8b89d","thread_name":"look at RPS29's recent bridge occupi","updated_at":"2026-09-01T13:52:59.802905564Z"}
+{"id":"01a05d3e-2248-7bc1-b37a-d8a6b1c8b89d","thread_name":"Investigate RPS29 bridge issue","updated_at":"2026-09-01T13:53:01.949483042Z"}
+{"id":"01a05d65-7ba0-7232-bdf0-75b87ecc4fa6","thread_name":"run an analysis on pittston to see h","updated_at":"2026-09-01T14:35:52.466182385Z"}
+{"id":"01a05d65-7ba0-7232-bdf0-75b87ecc4fa6","thread_name":"Analyze Pittston no-grasp outcomes","updated_at":"2026-09-01T14:35:55.636932186Z"}
+{"id":"01a05d70-2c9a-7b20-b4f9-1cdfb666ce39","thread_name":"rps29 just had a cup loss. grab the","updated_at":"2026-09-01T14:47:50.185662304Z"}
+{"id":"01a05d93-f071-7420-8bfd-4d0cdf9812d6","thread_name":"do an analysis on cup loss in Pittst","updated_at":"2026-09-01T15:26:28.452090769Z"}
+{"id":"01a05d93-f071-7420-8bfd-4d0cdf9812d6","thread_name":"Analyze Pittston cup loss","updated_at":"2026-09-01T15:26:30.528585243Z"}
+{"id":"01a05d95-2098-7fa0-b210-37bbeeab0110","thread_name":"do an analysis to see how long we're","updated_at":"2026-09-01T15:27:58.308918486Z"}
+{"id":"01a05d95-2098-7fa0-b210-37bbeeab0110","thread_name":"Analyze Pittston RPS wait times","updated_at":"2026-09-01T15:28:00.348844367Z"}

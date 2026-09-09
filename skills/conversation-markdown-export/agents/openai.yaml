@@ -1,0 +1,4 @@
+interface:
+  display_name: "Conversation Markdown Export"
+  short_description: "Export the current conversation as Markdown"
+  default_prompt: "Use $conversation-markdown-export to export this conversation as a downloadable Markdown file."

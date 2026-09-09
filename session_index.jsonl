@@ -70,3 +70,51 @@
 {"id":"01a05d93-f071-7420-8bfd-4d0cdf9812d6","thread_name":"Analyze Pittston cup loss","updated_at":"2026-09-01T15:26:30.528585243Z"}
 {"id":"01a05d95-2098-7fa0-b210-37bbeeab0110","thread_name":"do an analysis to see how long we're","updated_at":"2026-09-01T15:27:58.308918486Z"}
 {"id":"01a05d95-2098-7fa0-b210-37bbeeab0110","thread_name":"Analyze Pittston RPS wait times","updated_at":"2026-09-01T15:28:00.348844367Z"}
+{"id":"01a05dbc-f677-7bc0-bb2c-892ed1ad49c8","thread_name":"look at the recent bucket sensor IR","updated_at":"2026-09-01T16:11:35.183103993Z"}
+{"id":"01a05e07-d83d-7191-a450-9079e57ba83b","thread_name":"give me a ros2 run bg_param cli.py s","updated_at":"2026-09-01T17:32:56.771583785Z"}
+{"id":"01a05e07-d83d-7191-a450-9079e57ba83b","thread_name":"Set WMS parameter via bg_param","updated_at":"2026-09-01T17:33:00.625700417Z"}
+{"id":"01a063d2-bc52-7d22-a74d-8ca353b4826e","thread_name":"take a look at my bg_sandbox repo an","updated_at":"2026-09-02T20:33:56.139226533Z"}
+{"id":"01a063d2-bc52-7d22-a74d-8ca353b4826e","thread_name":"Verify SKU eligibility counts","updated_at":"2026-09-02T20:33:57.764845115Z"}
+{"id":"01a063d6-601c-7ee2-88bc-36d3d5e28b5c","thread_name":"help me understand this. 60% of skus","updated_at":"2026-09-02T20:37:23.009702367Z"}
+{"id":"01a063d6-601c-7ee2-88bc-36d3d5e28b5c","thread_name":"Clarify SKU eligibility percentages","updated_at":"2026-09-02T20:37:27.071565628Z"}
+{"id":"01a0641a-e2d9-7e40-bcd1-ea030feabbae","thread_name":"let's take a look at Sample of the 7","updated_at":"2026-09-02T21:51:32.224462025Z"}
+{"id":"01a0641a-e2d9-7e40-bcd1-ea030feabbae","thread_name":"Review 79 SKU report","updated_at":"2026-09-02T21:51:33.722511772Z"}
+{"id":"01a067b7-1a78-7501-bdaa-6a3c2374ad13","thread_name":"verify this assertion https://berksh","updated_at":"2026-09-03T14:40:56.335321006Z"}
+{"id":"01a067b7-1a78-7501-bdaa-6a3c2374ad13","thread_name":"Verify the Slack assertion","updated_at":"2026-09-03T14:40:57.953160358Z"}
+{"id":"01a06867-c1f7-7a61-8f39-ddec33d026a2","thread_name":"$vrr-ticket-authoring https://berksh","updated_at":"2026-09-03T17:53:51.932222218Z"}
+{"id":"01a06867-c1f7-7a61-8f39-ddec33d026a2","thread_name":"Process VRR ticket markers","updated_at":"2026-09-03T17:53:55.177021629Z"}
+{"id":"01a0695e-baf3-7460-aff0-eec6d7bf8572","thread_name":"help me fill out this form but use m","updated_at":"2026-09-03T22:23:51.161441204Z"}
+{"id":"01a0695e-baf3-7460-aff0-eec6d7bf8572","thread_name":"Complete form in my voice","updated_at":"2026-09-03T22:23:54.779645104Z"}
+{"id":"01a06cb2-4c5a-7960-9ecc-f27146eedea7","thread_name":"review this analysis. is it accurate","updated_at":"2026-09-04T13:53:50.317962445Z"}
+{"id":"01a06cb2-4c5a-7960-9ecc-f27146eedea7","thread_name":"Review RSPS-7205 analysis","updated_at":"2026-09-04T13:53:52.201966338Z"}
+{"id":"01a06d1f-dff4-79f3-a2e2-4d46e12f508c","thread_name":"ZF Create ticket: Why is active rate","updated_at":"2026-09-04T15:54:16.160376878Z"}
+{"id":"01a06d1f-dff4-79f3-a2e2-4d46e12f508c","thread_name":"Investigate low Pittston active rate","updated_at":"2026-09-04T15:54:18.289344171Z"}
+{"id":"01a06d2f-f452-7142-abf6-1aa4370d4488","thread_name":"there are two recent meeting with zo","updated_at":"2026-09-04T16:11:14.252039891Z"}
+{"id":"01a06d2f-f452-7142-abf6-1aa4370d4488","thread_name":"Combine recent MB:ZF summaries","updated_at":"2026-09-04T16:11:16.222801574Z"}
+{"id":"01a06d37-ec21-76f0-9960-a09bce8d10a5","thread_name":"take a look at this. https://berkshi","updated_at":"2026-09-04T16:19:40.925142168Z"}
+{"id":"01a06d37-ec21-76f0-9960-a09bce8d10a5","thread_name":"Review linked Slack thread","updated_at":"2026-09-04T16:19:42.908960008Z"}
+{"id":"01a06d41-a286-7e91-a3b2-4bb4a119f334","thread_name":"what do i need to do to enable MFIS","updated_at":"2026-09-04T16:30:22.369164563Z"}
+{"id":"01a06d4c-4f6d-7890-84d8-b241cb7b6a14","thread_name":"why isn't pull ML assets in this job","updated_at":"2026-09-04T16:42:10.281114735Z"}
+{"id":"01a06d4c-4f6d-7890-84d8-b241cb7b6a14","thread_name":"Restore ML assets in 22.04","updated_at":"2026-09-04T16:42:20.227145884Z"}
+{"id":"01a06dc2-d918-79a3-84d9-bc57567003b2","thread_name":"copy in the scripts from Kyle's bran","updated_at":"2026-09-04T18:51:41.223892777Z"}
+{"id":"01a06dc2-d918-79a3-84d9-bc57567003b2","thread_name":"Copy Kyle's scripts into sandbox","updated_at":"2026-09-04T18:51:44.877091733Z"}
+{"id":"01a06e01-9ce5-7bc2-8250-cd15a317573b","thread_name":"write a ticket to give this a try an","updated_at":"2026-09-04T20:00:07.108880189Z"}
+{"id":"01a06e01-9ce5-7bc2-8250-cd15a317573b","thread_name":"Test point cloud noise smoothing","updated_at":"2026-09-04T20:00:10.86348176Z"}
+{"id":"01a08126-f56b-76f2-b760-a6a7dd7bc2ac","thread_name":"implement https://berkshiregrey.atla","updated_at":"2026-09-08T13:13:31.556034493Z"}
+{"id":"01a08126-f56b-76f2-b760-a6a7dd7bc2ac","thread_name":"Implement RSPS-7256","updated_at":"2026-09-08T13:13:33.414345417Z"}
+{"id":"01a08146-42c3-7033-b254-3a244f111234","thread_name":"implement https://berkshiregrey.atla","updated_at":"2026-09-08T13:47:42.698199196Z"}
+{"id":"01a08146-42c3-7033-b254-3a244f111234","thread_name":"Implement RSPS-7393","updated_at":"2026-09-08T13:47:44.65129978Z"}
+{"id":"01a0814f-d93e-7ff1-8ded-e32253f718fd","thread_name":"https://berkshiregrey.slack.com/arch","updated_at":"2026-09-08T13:58:27.562757033Z"}
+{"id":"01a0814f-d93e-7ff1-8ded-e32253f718fd","thread_name":"Review collision and auto-recovery","updated_at":"2026-09-08T13:58:35.338987786Z"}
+{"id":"01a081eb-b9d8-70c3-a34b-aad93527f530","thread_name":"in my bg_sandbox, run the `compare_p","updated_at":"2026-09-08T16:48:59.619496363Z"}
+{"id":"01a081eb-b9d8-70c3-a34b-aad93527f530","thread_name":"Compare RSPS-7393 RPS parameters","updated_at":"2026-09-08T16:49:03.637240556Z"}
+{"id":"01a08282-2b89-7950-b17a-cda6c14bcd4e","thread_name":"implement https://berkshiregrey.atla","updated_at":"2026-09-08T19:32:46.304412607Z"}
+{"id":"01a08282-2b89-7950-b17a-cda6c14bcd4e","thread_name":"Implement RSPS-7402","updated_at":"2026-09-08T19:32:48.027808181Z"}
+{"id":"01a08294-db51-7543-af7a-d5520b88169e","thread_name":"find other candidates in RSPS-4504 t","updated_at":"2026-09-08T19:53:25.279130936Z"}
+{"id":"01a08294-db51-7543-af7a-d5520b88169e","thread_name":"Find RSPS-4504 transfer candidates","updated_at":"2026-09-08T19:53:33.56561917Z"}
+{"id":"01a082a5-f20b-7142-a334-60019b7079d8","thread_name":"move this ticket to complete https:/","updated_at":"2026-09-08T20:11:51.876026318Z"}
+{"id":"01a082a5-f20b-7142-a334-60019b7079d8","thread_name":"Move RSPS-7402 to complete","updated_at":"2026-09-08T20:11:53.701150192Z"}
+{"id":"01a082fc-3d71-7df2-91e8-89fdb13f1a7f","thread_name":"move this ticket to complete","updated_at":"2026-09-08T21:46:07.796636881Z"}
+{"id":"01a082fc-3d71-7df2-91e8-89fdb13f1a7f","thread_name":"Move ticket to complete","updated_at":"2026-09-08T21:46:10.163059585Z"}
+{"id":"01a0870f-ba5e-7971-b18b-570ee01e138e","thread_name":"verify this https://berkshiregrey.sl","updated_at":"2026-09-09T16:45:52.235386164Z"}
+{"id":"01a0870f-ba5e-7971-b18b-570ee01e138e","thread_name":"Verify Slack message","updated_at":"2026-09-09T16:45:54.717829627Z"}

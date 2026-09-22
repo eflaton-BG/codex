@@ -1,0 +1,4 @@
+interface:
+  display_name: "Frontier Image Annotation"
+  short_description: "Calibrate and run frontier-model image labels"
+  default_prompt: "Use $frontier-image-annotation to prepare and safely run an image annotation job."

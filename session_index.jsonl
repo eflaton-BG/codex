@@ -152,3 +152,6 @@
 {"id":"01a0a71c-210d-72d2-a1cc-dde343d315ce","thread_name":"Publish weight ineligibility metrics","updated_at":"2026-09-15T22:07:33.336541385Z"}
 {"id":"01a0c495-3b4d-78b2-b07b-bca4e4bcb1ae","thread_name":"Schedule meeting tomorrow at 1:30","updated_at":"2026-09-21T15:29:02.106727753Z"}
 {"id":"01a0c4a1-5f86-7111-9b03-286dabb034f6","thread_name":"Review PR 2573 against standard","updated_at":"2026-09-21T15:42:00.016962955Z"}
+{"id":"01a0c9b5-a1f4-7530-844c-5267f107a0a7","thread_name":"Investigate missing PI images","updated_at":"2026-09-22T15:22:09.630206024Z"}
+{"id":"01a0ca9a-3c91-7d83-b791-3869603f9709","thread_name":"Process Box VRR tickets","updated_at":"2026-09-22T19:45:59.367070746Z"}
+{"id":"01a0cade-49a7-7551-81cf-50f179be67bb","thread_name":"Create ticket from Slack thread","updated_at":"2026-09-22T20:46:22.081676139Z"}

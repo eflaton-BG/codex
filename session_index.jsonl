@@ -158,3 +158,8 @@
 {"id":"01a0cfaa-d3b1-7941-aea4-e5cadfbc2db7","thread_name":"Check whether RSPS-3353 persists","updated_at":"2026-09-23T19:08:02.84200134Z"}
 {"id":"01a0cfd6-6cdf-7cb0-bc6b-ef6975f20e8d","thread_name":"Diagnose Bluetooth mouse lag","updated_at":"2026-09-23T19:55:42.66116128Z"}
 {"id":"01a0d3e4-e1eb-7e73-baf4-24ab9887cb40","thread_name":"Find RSPS-6910 TestRail link","updated_at":"2026-09-24T14:49:58.49171033Z"}
+{"id":"01a0d437-8f40-7cc1-b308-244279bbfc25","thread_name":"Summarize RSPS-4818 and guidance","updated_at":"2026-09-24T16:20:47.091227095Z"}
+{"id":"01a0d442-97c5-7df1-b022-64c7b8cc3ced","thread_name":"Find related ticket for RSPS-7431","updated_at":"2026-09-24T16:32:17.331440181Z"}
+{"id":"01a0d4c5-043a-7442-8fe7-d7a099f2222f","thread_name":"Author VRR tickets","updated_at":"2026-09-24T18:54:46.607916396Z"}
+{"id":"01a0d4c6-09da-70b3-ae6e-86488db8b2ee","thread_name":"Add grouped top-5 VRR logs RSPS-7297","updated_at":"2026-09-24T18:57:34.32385378Z"}
+{"id":"01a0d4e4-f61c-71c0-bcfa-3a6afd98b7aa","thread_name":"Draft four RPS version tickets","updated_at":"2026-09-24T19:29:48.612899837Z"}

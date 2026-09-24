@@ -155,3 +155,6 @@
 {"id":"01a0c9b5-a1f4-7530-844c-5267f107a0a7","thread_name":"Investigate missing PI images","updated_at":"2026-09-22T15:22:09.630206024Z"}
 {"id":"01a0ca9a-3c91-7d83-b791-3869603f9709","thread_name":"Process Box VRR tickets","updated_at":"2026-09-22T19:45:59.367070746Z"}
 {"id":"01a0cade-49a7-7551-81cf-50f179be67bb","thread_name":"Create ticket from Slack thread","updated_at":"2026-09-22T20:46:22.081676139Z"}
+{"id":"01a0cfaa-d3b1-7941-aea4-e5cadfbc2db7","thread_name":"Check whether RSPS-3353 persists","updated_at":"2026-09-23T19:08:02.84200134Z"}
+{"id":"01a0cfd6-6cdf-7cb0-bc6b-ef6975f20e8d","thread_name":"Diagnose Bluetooth mouse lag","updated_at":"2026-09-23T19:55:42.66116128Z"}
+{"id":"01a0d3e4-e1eb-7e73-baf4-24ab9887cb40","thread_name":"Find RSPS-6910 TestRail link","updated_at":"2026-09-24T14:49:58.49171033Z"}

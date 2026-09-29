@@ -11,6 +11,8 @@ The script requires installer-managed `BG_AI_GATEWAY_API_KEY` and `BG_AI_GATEWAY
 
 Before calling a connection, inspect its permissions. Use `download` for files or when a `call` response reports `bodyTruncated: true`. Use `--body-file`, `--body-base64-file`, or `--multipart-json` instead of embedding large content in a shell command.
 
+When a provider redirects a `call`, the response can include a query-stripped `finalUrl`. Use it to identify the terminal resource without exposing or depending on signed redirect query parameters.
+
 For Slack attachments, first search messages or read the thread, extract the Slack file ID, inspect it with `call <connection-id> --method POST --path /files.info --body-text file=<file-id>`, then use `slack-file-download <connection-id> <file-id> --output <workspace-relative-path>`. The download command resolves the private URL server-side and never accepts a copied Slack private URL. It requires the Slack `File details` and `Download file` read capabilities plus the connected user's current Slack access. If unavailable, report the returned capability, scope, visibility, size, timeout, or redirect error rather than inventing or reusing unrelated media.
 
 All `bga-connections` Slack calls, including the existing `files.getUploadURLExternal` and `files.completeUploadExternal` upload sequence, act as the saved connected Slack user. They are separate from `POST /platform/slack/files`, which is available only to a running Agent Gateway and uploads one runtime-workspace file as the BG Agents Slack app. This local client intentionally does not expose that bot-identity upload path.

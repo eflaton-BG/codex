@@ -1,5 +1,5 @@
-model = "gpt-6-sol"
-model_reasoning_effort = "high"
+model = "gpt-6.1-sol"
+model_reasoning_effort = "low"
 plan_mode_reasoning_effort = "high"
 
 [projects."/home/ezekiel.flaton/devel/colcon_ws/src"]

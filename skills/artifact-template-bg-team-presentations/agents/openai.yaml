@@ -1,0 +1,7 @@
+interface:
+  display_name: "BG Team Presentations"
+  short_description: "Create presentations with the BG Team Presentations template"
+  icon_large: "./assets/preview.png"
+  default_prompt: "Use $artifact-template-bg-team-presentations to create a presentation with this template."
+policy:
+  allow_implicit_invocation: true

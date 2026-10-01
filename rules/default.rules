@@ -45,3 +45,4 @@ prefix_rule(pattern=["/usr/bin/python3", "/home/ezekiel.flaton/.codex/skills/shi
 prefix_rule(pattern=["/home/ezekiel.flaton/.codex/skills/frontier-image-annotation/scripts/run_download_s3_images.sh"], decision="allow")
 prefix_rule(pattern=["/usr/local/bin/aws", "sts", "get-caller-identity"], decision="allow")
 prefix_rule(pattern=["/usr/bin/python3", "/tmp/iros-2026-materials/fetch_arxiv_queries.py"], decision="allow")
+prefix_rule(pattern=["/usr/bin/libreoffice", "-env:UserInstallation=file:///tmp/iros-lo-profile", "--headless", "--convert-to", "pdf", "--outdir", "/tmp/iros-2026-materials/bullets", "/tmp/iros-2026-materials/bullets/IROS 2026 - Team Takeaways.pptx"], decision="allow")

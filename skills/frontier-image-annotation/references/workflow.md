@@ -1,5 +1,28 @@
 # Frontier Annotation Workflow
 
+## Repeatable RES1 preparation (September 2026 correction)
+
+Use [repeatable-res1-preparation.md](repeatable-res1-preparation.md) and
+`scripts/prepare.py` for inclusive local date ranges. It separates metric SKU
+export, explicitly approved native Atlas mapping, and explicitly approved S3
+HEAD validation. No command makes OpenAI calls or downloads image bodies.
+
+Keep `SkuRobotEligibilityChange` as the SKU source; using Atlas for image
+mapping must not redefine the inventory. `PickComplete` supplies tote/product
+IDs, not an RES1 image reference; the historical mapper additionally joins logs.
+
+Discover actual Atlas namespaces, filter the native join to RGB images, and
+report exact join coverage. The September 1–30, 2026 metric inventory has
+49,137 SKUs from 598,301 records; the tested Atlas RGB/timestamp mapping yielded
+zero candidates. Other sensor images with populated file paths do not establish
+RES1 product-image coverage or S3 keys. Switching to save logs still requires
+separate approval.
+
+The final artifact must identify existing, non-zero S3 image objects, with
+byte sizes and ETags, and preserve unmatched or missing-object SKUs. Native
+mapping output is only a candidate until S3 validation succeeds. Validate with
+the host AWS credential chain; never substitute cluster credentials.
+
 Source procedure:
 `https://berkshiregrey.atlassian.net/wiki/spaces/RPS/pages/3475865607/How+To+Annotations+with+a+Frontier+Model`
 
@@ -67,11 +90,12 @@ Run annotation commands through:
 /home/ezekiel.flaton/.codex/skills/frontier-image-annotation/scripts/run_frontier_annotation.sh
 ```
 
-The wrapper preserves the virtualenv Python path, injects `OPENAI_API_KEY` from
-the `openai/transcription` Agent Secrets profile, and defaults
-`OPENAI_BASE_URL` to
-`https://agents-gateway.berkshiregrey.com/ai-gateway/codex/v1`. Do not source
-shell startup files, print the secret, or put it on the command line.
+The wrapper preserves the virtualenv Python path. Always ask which account/profile
+to use before a new billable run; there is no default credential profile.
+Read-only commands never inject credentials. See
+[guarded-annotation.md](guarded-annotation.md) for explicit account selection,
+locked execution, calibration reuse, and validation. Do not source shell startup
+files, print secrets, or put their values on the command line.
 
 Vault-backed Elasticsearch access uses `bg_vault_elastic`, whose client imports
 the `hvac` package. The workspace environment does not contain `hvac`, but
@@ -201,8 +225,8 @@ URIs, and the mapping CSV must contain `s3_uri` and positive
    - Run the bundled runner's `inspect` command.
    - Confirm repository state, model, config, image count, dependency state, and
      output directory.
-   - Obtain explicit approval, then annotate the calibration set with
-     `--save-crops`.
+   - Ask which account/profile to use and obtain explicit billable approval.
+     The guarded runner always saves crops.
    - Compare predicted text labels and crops against the hand labels.
    - Iterate on the job-specific config, crop behavior, model, and concurrency as
      needed. Do not silently modify `bg_ml`.

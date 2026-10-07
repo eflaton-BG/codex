@@ -1,8 +1,14 @@
 model = "gpt-6.1-sol"
-model_reasoning_effort = "low"
+model_reasoning_effort = "high"
 plan_mode_reasoning_effort = "high"
 
 [projects."/home/ezekiel.flaton/devel/colcon_ws/src"]
+trust_level = "trusted"
+
+[projects."/home/ezekiel.flaton/Documents/Codex/2026-10-06/find-t"]
+trust_level = "trusted"
+
+[projects."/home/ezekiel.flaton/Documents/Codex/2026-10-06/run-x20"]
 trust_level = "trusted"
 
 [features]

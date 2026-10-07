@@ -31,13 +31,19 @@ User instructions control requested content and explicit deviations. The retaine
   conclusion recaps, not unmarked lines or typed bullet characters. Use consistent
   hanging indentation and spacing. Keep topic labels as headings, with supporting
   points underneath. Titles, dividers, captions, and Thank You need not be bullets.
+- Keep slide bullets short: key phrases rather than full explanatory sentences.
+  Preserve the mechanism and why it is interesting; move qualifications and full
+  explanations into natural speaker notes. For research recaps, aim for two
+  compact bullets per topic, typically 5–12 words when meaning permits.
+- Center image-caption text beneath its image. Check the rendered alignment,
+  not merely the caption box position.
 - Use actual retained BG template slides for cover, outline, section dividers,
   content, conclusion, and Thank You. Do not redraw approximations. Preserve
   branding, layouts, masters, footer treatment, slide size, and editable objects.
 - Add dividers between the major sections and end with the template Thank You.
   Label the recap **Conclusion**, not Main Takeaways. For conference recaps,
   organize the outline as takeaways, interesting ideas, and conclusion; the IROS
-  deck specifically used **4 takeaways / Interesting ideas / Conclusion**.
+  deck specifically used **Four Takeaways / Interesting Ideas / Conclusion**.
 - Do not add feedback requests, audience decision prompts, assigned owners, or
   a roadmap unless explicitly requested. A research question is not an audience
   feedback request.
@@ -46,6 +52,21 @@ User instructions control requested content and explicit deviations. The retaine
 - Use source figures and user-provided photos where they clarify a point. Keep
   figure data and labels intact. Separate published results from our proposed
   applications, informal observations, and unverified assumptions.
+
+## Research figures and revision lessons
+
+- Two papers can share a slide when each has its own heading, two short native
+  bullets, and a readable source figure. Remove a redundant standalone slide when
+  moving its topic into a pair; update notes, source references, and slide numbers.
+- Match the image to the takeaway: a labeled gripper/sensor setup can communicate
+  a hardware opportunity better than a dense method diagram or results table.
+  Inspect the supplied PDF rather than assuming its first figure is the best.
+- Preserve figure labels and aspect ratio; record figure number and PDF page.
+  Keep generated visual prompts distinct from measured evidence in speaker notes.
+- For panorama stitching artifacts, prefer a tighter crop of useful real content
+  and modest exposure correction over fabricating missing details. Keep originals.
+- Apply user-corrected product capitalization consistently in captions, titles,
+  recaps, and speaker notes, not just the initially identified slide.
 
 ## Speaker-note voice
 

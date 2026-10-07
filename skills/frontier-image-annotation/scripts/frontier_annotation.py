@@ -232,41 +232,11 @@ def stage_annotation_script(
 
 
 def annotate(args: argparse.Namespace) -> int:
-    plan = inspect_job(args)
-    print(json.dumps(plan, indent=2))
-
-    if not args.approved_billable_run:
-        raise PermissionError(
-            "Refusing to start API calls without --approved-billable-run"
-        )
-    if plan["image_count"] == 0:
-        raise ValueError(f"No PNG images found in {plan['images']}")
-    if not plan["dependencies"]["ok"]:
-        raise RuntimeError("Required annotation dependencies are unavailable")
-    if not os.environ.get("OPENAI_API_KEY"):
-        raise RuntimeError("OPENAI_API_KEY is not available in the environment")
-
-    source = Path(str(plan["annotation_script"]))
-    config = Path(str(plan["config"]))
-    staged_script = stage_annotation_script(
-        source,
-        config,
-        workers=args.workers,
-        api_max_retries=args.api_max_retries,
+    raise PermissionError(
+        "Use run_frontier_annotation.sh annotate with explicit user-selected "
+        "--credential-source, --credential-profile, and --base-url. "
+        "Legacy implicit-credential annotation is disabled."
     )
-    command = [
-        str(absolute_without_resolving(args.python)),
-        str(staged_script),
-        "--input-images-dir",
-        str(args.images.expanduser().resolve()),
-    ]
-    if args.save_crops:
-        command.append("--save-crops")
-
-    environment = os.environ.copy()
-    environment["PYTHONUNBUFFERED"] = "1"
-    result = subprocess.run(command, check=False, env=environment)
-    return result.returncode
 
 
 def download(args: argparse.Namespace) -> int:
@@ -448,6 +418,13 @@ def parse_args() -> argparse.Namespace:
     status_parser.add_argument("--images", type=Path, required=True)
     status_parser.add_argument("--config", type=Path)
 
+    validation_parser = subparsers.add_parser(
+        "validate", help="Check complete label/crop sets without API calls."
+    )
+    validation_parser.add_argument("--repo", type=Path, default=DEFAULT_REPO)
+    validation_parser.add_argument("--images", type=Path, required=True)
+    validation_parser.add_argument("--config", type=Path)
+
     download_parser = subparsers.add_parser(
         "download", help="Inspect or execute the bg_ml S3 image downloader."
     )
@@ -488,6 +465,15 @@ def main() -> int:
     if args.command == "status":
         print(json.dumps(annotation_status(args), indent=2))
         return 0
+    if args.command == "validate":
+        import annotation_job
+        config = resolve_config(args.repo, args.config)
+        parsed = parse_config(config)
+        result = annotation_job.validate_outputs(
+            args.images, output_dir(args.images, parsed["model"]), parsed["labels"]
+        )
+        print(json.dumps(result, indent=2))
+        return 0 if annotation_job.complete(result) else 1
     if args.command == "download":
         return download(args)
     if args.command == "evaluate":

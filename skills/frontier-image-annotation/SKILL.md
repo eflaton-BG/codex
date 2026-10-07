@@ -27,9 +27,16 @@ stable command for resumable, size-validated S3 download planning and execution.
 It always runs the bundled downloader with the workspace virtualenv.
 Use
 [`scripts/run_frontier_annotation.sh`](scripts/run_frontier_annotation.sh) as
-the stable annotation command. It uses the workspace virtualenv, injects the
-OpenAI key from the `openai/transcription` Agent Secrets profile, and defaults
-`OPENAI_BASE_URL` to the BG AI Gateway without exposing credentials.
+the stable annotation command. Read-only commands never inject credentials.
+Billable annotation uses the locked `scripts/annotation_job.py` runner and
+requires an explicitly selected credential source, profile, and endpoint.
+**Always ask the user which account/profile to use before a new billable run.**
+Never default to Stride, a personal profile, a previous job's account, or an
+inherited environment variable. Account selection does not authorize model calls.
+See [references/guarded-annotation.md](references/guarded-annotation.md) for
+credential selection, calibration reuse, failure recovery, and completion checks.
+Use [`scripts/build_review_package.py`](scripts/build_review_package.py) for an
+exact-size category-balanced review plus a full-population SKU distribution chart.
 Use
 [`scripts/build_review_gallery.py`](scripts/build_review_gallery.py) to create a
 deterministic, browser-based sample review with original images, annotated
@@ -44,6 +51,22 @@ Use [`scripts/map_sku_images.py`](scripts/map_sku_images.py) to plan or export o
 representative Pittston image per SKU through an explicitly approved
 `PickComplete` fallback.
 
+For repeatable date-driven Pittston RES1 preparation, prefer
+[`scripts/prepare.py`](scripts/prepare.py) and
+[`references/repeatable-res1-preparation.md`](references/repeatable-res1-preparation.md).
+Its separate `metrics`, `native-map`, and `validate-s3` commands accept
+`--date-from`, `--date-to`, and `--job-dir`, with distinct approval flags.
+It never calls OpenAI or downloads image bodies.
+For the explicitly approved synchronizer/perception save-log fallback, use
+[`scripts/fallback.py`](scripts/fallback.py). It preserves the metric SKU
+inventory, caches complete bounded gateway log reads, and writes mapping
+candidates with temporal-alignment provenance. Then use `prepare.py validate-s3`
+with `--mapping-source fallback` after S3 metadata-read approval.
+Optionally use [`scripts/finalize.py`](scripts/finalize.py) to queue approved,
+HEAD-only S3 verification behind an already-running fallback. Its per-job lock
+prevents duplicate finalizers; status is persisted in
+`manifest/s3-finalization.status.json`. It does not download images or call OpenAI.
+
 ## Operating Rules
 
 - Treat the checked-out repository as user work. Inspect its branch and status;
@@ -51,9 +74,9 @@ representative Pittston image per SKU through an explicitly approved
   permission.
 - Prefer a copied, job-specific YAML config outside the repository for prompt
   iteration. The runner can inject that config without changing `bg_ml`.
-- Never ask the user to paste AWS or OpenAI secrets. Use existing environment
-  credentials or the `agent-secrets` skill for redacted inspection and
-  environment injection.
+- Never ask the user to paste AWS or OpenAI secrets. After asking which model
+  account/profile to use, use named keyring injection or literal dotenv parsing;
+  never source `.bashrc` or `.env`. AWS uses the user's host credential chain.
 - Use one virtual environment for the download, calibration, and full run.
   Verify `openai`, `Pillow`, `PyYAML`, and, when downloading, `boto3`.
   The Pittston RES1 Atlas/log fallback additionally requires `pymongo`,
@@ -73,7 +96,7 @@ representative Pittston image per SKU through an explicitly approved
 - Do not start a billable annotation run until the user explicitly approves the
   reported model, config, image count, and output directory. Pass
   `--approved-billable-run` only after that approval.
-- Before enabling `--save-crops`, report free space and projected crop usage.
+- The guarded runner always saves crops. Before running, report free space and projected crop usage.
   Estimate remaining crop space from a representative calibration average when
   available; otherwise conservatively use the remaining source-image bytes.
 - A full run may take substantial time and money. Do not infer approval from a
@@ -82,12 +105,20 @@ representative Pittston image per SKU through an explicitly approved
   completed and remaining labels, percentage, crop count, and latest-label
   timestamp. For a unified-exec job, poll its existing session too; a separate
   `ps` may not see an escalated process.
+- Honor the user's requested update cadence (`--progress-seconds` controls
+  process heartbeats, not automatic chat delivery). Read timestamps from the
+  host clock. Do not promise unattended chat notifications that are not set up.
+- Empty responses must not crash diagnostics. The guarded runner journals each
+  result, redacts failures to type/status, and stops scheduling after a bounded
+  consecutive-failure threshold. API retries can add cost; report the limit.
+- Final success requires `validate`: exact input/label/crop stem sets, allowed
+  label values, and nonempty crops. An exit code alone is insufficient.
 - After a crash or lost terminal, check durable status before doing anything.
   Do not launch a duplicate while labels are still advancing. If the process
   stopped, resume with the exact approved images, config, model, and output
-  location; existing label files are skipped. Reuse the prior billable approval
+  location and selected account; validated existing label files are skipped. Reuse the prior billable approval
   only for that exact interrupted job. Any changed input, config, model, count,
-  or destination requires fresh approval.
+  destination, or account requires fresh approval and explicit account selection.
 - Annotation concurrency is configurable with `--workers`; the skill stages a
   tuned copy under `/tmp` and never edits `bg_ml`. Start with 4 workers for a
   large run, keep `--api-max-retries 5`, and measure durable progress before
@@ -106,6 +137,10 @@ representative Pittston image per SKU through an explicitly approved
   and review outputs beneath that single directory. Never scatter a job's
   durable artifacts across `~/Downloads`, rely on `/tmp` for later-session
   artifacts, or place final exports in `/tmp`.
+- Keep the local inventory date window separate from UTC image-folder dates;
+  Eastern September data can legitimately reference an October 1 UTC folder.
+  Preserve exact SKU-to-S3 URIs and shared-image flags. Call once per distinct
+  image; count each unique mapped SKU separately in SKU-distribution graphs.
 - Moving existing artifacts into a job directory is a write. Inventory the
   proposed paths and obtain explicit approval before creating the directory or
   moving anything.
@@ -116,6 +151,23 @@ representative Pittston image per SKU through an explicitly approved
   absent, incomplete, or unavailable, stop, identify the proposed alternative,
   and obtain explicit user approval before querying Atlas prediction records,
   Elasticsearch prediction logs, `PickComplete`, or MongoDB.
+- Keep the metric-derived SKU inventory authoritative when using Atlas solely
+  for image mapping: do not replace it with Atlas-only SKUs. Image mapping reads
+  require explicit approval separately from SKU discovery.
+- `PickComplete` is another metric, but not a direct RES1 image mapping:
+  `map_sku_images.py` delegates to a tote/product exporter requiring
+  synchronizer and perception-logger joins. It is not a metrics-only solution.
+- Discover Atlas database/collection metadata before querying. A nonexistent
+  namespace silently returns no rows. Do not assume the deployed
+  `res1_perception_data` database exists in Atlas.
+- For native image joins, require the product RGB topic
+  `/pick_scanner/rgb_camera/raw/image`, not arbitrary PNG-bearing sensor records.
+  Join BSON millisecond timestamps exactly; never guess paths by proximity.
+- The final deliverable is an exact SKU-to-S3-object mapping, not merely an Atlas
+  filename. Use host AWS credentials to HEAD selected objects, retain their
+  non-zero sizes and ETags, and preserve missing/empty objects separately.
+  Obtain S3 read approval before `validate-s3`. Object validation does not
+  authorize image downloads or OpenAI calls.
 - Do not download the mapped images automatically after export. Show the mapped,
   unmatched, and ambiguous counts and obtain separate download approval.
 - Every download has a hard two-step gate. First run the download planner and
@@ -140,12 +192,16 @@ Use the stable wrapper rather than activating a shell manually:
 After explicit approval for a calibration API run:
 
 ```bash
+# Replace placeholders only after asking the user which profile/account to use.
 /home/ezekiel.flaton/.codex/skills/frontier-image-annotation/scripts/run_frontier_annotation.sh annotate \
   --images /path/to/calibration/images \
   --config /path/to/job-config.yaml \
+  --credential-source agent-secrets \
+  --credential-profile '<user-selected-profile>' \
+  --base-url '<user-confirmed-https-endpoint>' \
   --workers 4 \
   --api-max-retries 5 \
-  --save-crops \
+  --progress-seconds 60 \
   --approved-billable-run
 ```
 
@@ -171,8 +227,8 @@ command against it.
 
 ## Review Samples
 
-After annotation completes, verify that every input has both a label and, when
-requested, an annotated crop. Generate the review sample inside the same job
+After annotation completes, verify that every input has both a label and an
+annotated crop. Generate the review sample inside the same job
 directory:
 
 ```bash
@@ -323,3 +379,10 @@ Report the complete plan and obtain explicit approval. Then rerun with:
 
 For the verified Pittston RES1 August 2026 investigation, read
 [references/pittston-res1-august-2026.md](references/pittston-res1-august-2026.md).
+
+September 2026 preparation found 598,301 RES1 eligibility-change metric records
+and 49,137 unique SKUs. The full native timestamp/RGB join against Atlas
+`washington_pit_washington_perception_data.image_data` returned zero mapped SKUs
+for that inventory. This is a coverage result for that source/window, not proof
+that S3 images are absent. Ask before switching to a save-log or other metadata
+source. Preserve the metric inventory and unmatched-SKU artifacts.

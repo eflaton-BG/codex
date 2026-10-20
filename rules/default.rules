@@ -46,3 +46,6 @@ prefix_rule(pattern=["/home/ezekiel.flaton/.codex/skills/frontier-image-annotati
 prefix_rule(pattern=["/usr/local/bin/aws", "sts", "get-caller-identity"], decision="allow")
 prefix_rule(pattern=["/usr/bin/python3", "/tmp/iros-2026-materials/fetch_arxiv_queries.py"], decision="allow")
 prefix_rule(pattern=["/usr/bin/libreoffice", "-env:UserInstallation=file:///tmp/iros-lo-profile", "--headless", "--convert-to", "pdf", "--outdir", "/tmp/iros-2026-materials/bullets", "/tmp/iros-2026-materials/bullets/IROS 2026 - Team Takeaways.pptx"], decision="allow")
+prefix_rule(pattern=["/usr/bin/bash", "-lc", "UV_CACHE_DIR=/tmp/codex-uv-cache UV_TOOL_DIR=/tmp/codex-uv-tools /home/ezekiel.flaton/.local/bin/uv tool run --from ruff==0.12.10 ruff --version"], decision="allow")
+prefix_rule(pattern=["/usr/bin/bash", "-lc", "UV_CACHE_DIR=/tmp/codex-uv-cache UV_TOOL_DIR=/tmp/codex-uv-tools /home/ezekiel.flaton/.local/bin/uv tool run --from isort==5.12.0 isort --version-number"], decision="allow")
+prefix_rule(pattern=["/usr/bin/gh", "pr", "create"], decision="allow")

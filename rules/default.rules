@@ -49,3 +49,5 @@ prefix_rule(pattern=["/usr/bin/libreoffice", "-env:UserInstallation=file:///tmp/
 prefix_rule(pattern=["/usr/bin/bash", "-lc", "UV_CACHE_DIR=/tmp/codex-uv-cache UV_TOOL_DIR=/tmp/codex-uv-tools /home/ezekiel.flaton/.local/bin/uv tool run --from ruff==0.12.10 ruff --version"], decision="allow")
 prefix_rule(pattern=["/usr/bin/bash", "-lc", "UV_CACHE_DIR=/tmp/codex-uv-cache UV_TOOL_DIR=/tmp/codex-uv-tools /home/ezekiel.flaton/.local/bin/uv tool run --from isort==5.12.0 isort --version-number"], decision="allow")
 prefix_rule(pattern=["/usr/bin/gh", "pr", "create"], decision="allow")
+prefix_rule(pattern=["/usr/bin/python3", "/home/ezekiel.flaton/.codex/skills/bga-connections/bga-connections.py", "call"], decision="allow")
+prefix_rule(pattern=["/usr/bin/ffmpeg"], decision="allow")

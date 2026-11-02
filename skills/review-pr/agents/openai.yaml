@@ -1,0 +1,4 @@
+interface:
+  display_name: "Review PR"
+  short_description: "Review PR correctness against ticket scope and DoD"
+  default_prompt: "Use $review-pr to review these PRs against their linked tickets and Definition of Done without running tests or posting comments."

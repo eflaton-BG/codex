@@ -51,3 +51,4 @@ prefix_rule(pattern=["/usr/bin/bash", "-lc", "UV_CACHE_DIR=/tmp/codex-uv-cache U
 prefix_rule(pattern=["/usr/bin/gh", "pr", "create"], decision="allow")
 prefix_rule(pattern=["/usr/bin/python3", "/home/ezekiel.flaton/.codex/skills/bga-connections/bga-connections.py", "call"], decision="allow")
 prefix_rule(pattern=["/usr/bin/ffmpeg"], decision="allow")
+prefix_rule(pattern=["/usr/bin/docker", "exec"], decision="allow")

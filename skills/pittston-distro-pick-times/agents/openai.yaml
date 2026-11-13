@@ -1,0 +1,4 @@
+interface:
+  display_name: "Pittston Distro Pick Times"
+  short_description: "Generate CSVs and update the Box Excel workbook"
+  default_prompt: "Use $pittston-distro-pick-times for the last seven completed New York calendar days, generate one CSV per day, and update the established Box Excel workbook with newest-first daily sheets immediately after Overview."

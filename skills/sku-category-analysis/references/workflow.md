@@ -1,4 +1,4 @@
-# Frontier Annotation Workflow
+# SKU Category Analysis Workflow
 
 ## Repeatable RES1 preparation (September 2026 correction)
 
@@ -87,7 +87,7 @@ fixed export and download wrappers use one credential and dependency context.
 Run annotation commands through:
 
 ```text
-/home/ezekiel.flaton/.codex/skills/frontier-image-annotation/scripts/run_frontier_annotation.sh
+/home/ezekiel.flaton/.codex/skills/sku-category-analysis/scripts/run_frontier_annotation.sh
 ```
 
 The wrapper preserves the virtualenv Python path. Always ask which account/profile
@@ -248,7 +248,7 @@ URIs, and the mapping CSV must contain `s3_uri` and positive
    - `status` is read-only and makes no model API calls:
 
      ```bash
-     /home/ezekiel.flaton/.codex/skills/frontier-image-annotation/scripts/run_frontier_annotation.sh status \
+     /home/ezekiel.flaton/.codex/skills/sku-category-analysis/scripts/run_frontier_annotation.sh status \
        --images /path/to/images \
        --config /path/to/job-config.yaml
      ```

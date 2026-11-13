@@ -1,0 +1,4 @@
+interface:
+  display_name: "SKU Category Analysis"
+  short_description: "Discover SKUs, classify categories, and review results"
+  default_prompt: "Use $sku-category-analysis to discover SKUs, map representative images, and safely analyze product categories."

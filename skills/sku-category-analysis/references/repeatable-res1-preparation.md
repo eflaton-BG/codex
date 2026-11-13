@@ -12,7 +12,7 @@ non-authenticating vlogin/connectivity preflight; never invoke vlogin automatica
 
 ```sh
 /home/ezekiel.flaton/devel/colcon_ws/src/.venv/bin/python \
-  /home/ezekiel.flaton/.codex/skills/frontier-image-annotation/scripts/prepare.py metrics \
+  /home/ezekiel.flaton/.codex/skills/sku-category-analysis/scripts/prepare.py metrics \
   --date-from 2026-09-01 --date-to 2026-09-30 \
   --job-dir /home/ezekiel.flaton/Downloads/pittston-res1-september-2026 \
   --approved-write
@@ -31,7 +31,7 @@ remain the SKU source; mapping never adds Atlas-only SKUs.
   --env MONGO_HOST=public.host --env MONGO_USERNAME=public.username \
   --env MONGO_PASSWORD=private.password --env MONGO_DATABASE=public.database -- \
   /home/ezekiel.flaton/devel/colcon_ws/src/.venv/bin/python \
-  /home/ezekiel.flaton/.codex/skills/frontier-image-annotation/scripts/prepare.py native-map \
+  /home/ezekiel.flaton/.codex/skills/sku-category-analysis/scripts/prepare.py native-map \
   --date-from 2026-09-01 --date-to 2026-09-30 \
   --job-dir /home/ezekiel.flaton/Downloads/pittston-res1-september-2026 \
   --approved-native-read --approved-write
@@ -53,7 +53,7 @@ mapping candidates, **not S3-validated download manifests**.
 
 ```sh
 /home/ezekiel.flaton/devel/colcon_ws/src/.venv/bin/python \
-  /home/ezekiel.flaton/.codex/skills/frontier-image-annotation/scripts/prepare.py validate-s3 \
+  /home/ezekiel.flaton/.codex/skills/sku-category-analysis/scripts/prepare.py validate-s3 \
   --date-from 2026-09-01 --date-to 2026-09-30 \
   --job-dir /home/ezekiel.flaton/Downloads/pittston-res1-september-2026 \
   --approved-s3-read --approved-write
@@ -87,7 +87,7 @@ exporter's SKU replacement step. Run:
   --env MONGO_HOST=public.host --env MONGO_USERNAME=public.username \
   --env MONGO_PASSWORD=private.password --env MONGO_DATABASE=public.database -- \
   /home/ezekiel.flaton/devel/colcon_ws/src/.venv/bin/python \
-  /home/ezekiel.flaton/.codex/skills/frontier-image-annotation/scripts/fallback.py \
+  /home/ezekiel.flaton/.codex/skills/sku-category-analysis/scripts/fallback.py \
   --date-from 2026-09-01 --date-to 2026-09-30 \
   --job-dir /home/ezekiel.flaton/Downloads/pittston-res1-september-2026 \
   --approved-fallback --approved-write --workers 4
@@ -125,7 +125,7 @@ To queue metadata verification behind an already-running fallback, use:
 
 ```sh
 /home/ezekiel.flaton/devel/colcon_ws/src/.venv/bin/python \
-  /home/ezekiel.flaton/.codex/skills/frontier-image-annotation/scripts/finalize.py \
+  /home/ezekiel.flaton/.codex/skills/sku-category-analysis/scripts/finalize.py \
   --date-from 2026-09-01 --date-to 2026-09-30 \
   --job-dir /home/ezekiel.flaton/Downloads/pittston-res1-september-2026 \
   --wait-for-fallback --approved-s3-read --approved-write
@@ -148,7 +148,7 @@ not permission to fall back or substitute another sensor/station.
 Read progress without network calls or writes:
 
 ```sh
-/usr/bin/python3 /home/ezekiel.flaton/.codex/skills/frontier-image-annotation/scripts/status.py \
+/usr/bin/python3 /home/ezekiel.flaton/.codex/skills/sku-category-analysis/scripts/status.py \
   --job-dir /home/ezekiel.flaton/Downloads/pittston-res1-september-2026
 ```
 
@@ -164,6 +164,6 @@ rerunning the stopped finalizer. Never launch a duplicate producer.
 
 ```sh
 /usr/bin/env PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -m unittest discover \
-  -s /home/ezekiel.flaton/.codex/skills/frontier-image-annotation/scripts \
+  -s /home/ezekiel.flaton/.codex/skills/sku-category-analysis/scripts \
   -p 'test_*.py' -v
 ```

@@ -15,7 +15,7 @@ from types import SimpleNamespace
 from urllib.parse import urlsplit
 from zoneinfo import ZoneInfo
 
-SKILL = Path.home() / ".codex/skills/frontier-image-annotation"
+SKILL = Path.home() / ".codex/skills/sku-category-analysis"
 BGA = Path.home() / ".codex/skills/bga-connections/bga-connections.py"
 RGB_TOPIC = "/pick_scanner/rgb_camera/raw/image"
 UTC = timezone.utc

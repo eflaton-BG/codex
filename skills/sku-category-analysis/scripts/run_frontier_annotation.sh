@@ -2,8 +2,8 @@
 set -euo pipefail
 
 readonly PYTHON="/home/ezekiel.flaton/devel/colcon_ws/src/.venv/bin/python"
-readonly RUNNER="/home/ezekiel.flaton/.codex/skills/frontier-image-annotation/scripts/frontier_annotation.py"
-readonly JOB_RUNNER="/home/ezekiel.flaton/.codex/skills/frontier-image-annotation/scripts/annotation_job.py"
+readonly RUNNER="/home/ezekiel.flaton/.codex/skills/sku-category-analysis/scripts/frontier_annotation.py"
+readonly JOB_RUNNER="/home/ezekiel.flaton/.codex/skills/sku-category-analysis/scripts/annotation_job.py"
 
 if [[ ! -x "${PYTHON}" ]]; then
   printf 'Workspace virtualenv Python is unavailable: %s\n' "${PYTHON}" >&2

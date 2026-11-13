@@ -1,0 +1,4 @@
+interface:
+  display_name: "Release Cherry-Picks"
+  short_description: "Gate release picks, record SHAs, and publish on approval"
+  default_prompt: "Use $release-cherry-picks to reconcile this release sheet against the target branch and stop at checkpoint 1."

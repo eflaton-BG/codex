@@ -1,18 +1,41 @@
 ---
-name: frontier-image-annotation
-description: Prepare, calibrate, and run classification-style image annotation jobs with frontier models using the local bg_ml robot-eligibility tooling. Use for S3 image-list downloads, prompt/config calibration, guarded OpenAI API annotation runs, label evaluation, and handoff for human review; do not use for domain-specific detection or segmentation without an explicit feasibility experiment.
+name: sku-category-analysis
+description: Analyze SKU product categories end to end using local robot-eligibility tooling. Use for unique-SKU discovery, representative image mapping and retrieval, frontier-model classification, category distributions, and human-review galleries; do not use for domain-specific detection or segmentation without an explicit feasibility experiment.
 ---
 
-# Frontier Image Annotation
+# SKU Category Analysis
 
-Run the internal frontier-model annotation workflow without modifying the user's
-`bg_ml` checkout or exposing credentials.
+Discover unique SKUs, map and retrieve representative images, classify product
+categories with frontier models, and build distribution charts and human-review
+galleries without modifying the user's `bg_ml` checkout or exposing credentials.
 
 Default repository:
 `/home/ezekiel.flaton/devel/bg_ml_ws/bg_ml`
 
 Default annotation and S3 virtual environment:
 `/home/ezekiel.flaton/devel/colcon_ws/src/.venv`
+
+For new local-image or S3-streaming category runs, use the reusable
+[`scripts/run_job.sh`](scripts/run_job.sh). Job paths, counts, account/model,
+config, crop, retry policy and optional Slack thread are explicit job data,
+never site/month-specific code. Its `prepare`, `inspect`, `preflight`, `run`,
+`start`, `status`, `diagnose`, `validate`, `recover`, monitoring and `test` modes
+have separate approval scopes. Read
+[`references/job-runner.md`](references/job-runner.md) before preparing a job.
+Keep all operational calls on installed skill entry points, not `/tmp` scripts.
+Do not migrate an existing run or replay uncertain API work to adopt this runner.
+
+For repeatable, rule-approved run diagnostics, invoke
+[`scripts/run_checks.sh`](scripts/run_checks.sh) directly with `status`,
+`diagnose`, `aws-lifetime`, or `preflight`. These modes do not run inference,
+download image bodies, post updates, log in, or change services. See
+[`references/run-checks.md`](references/run-checks.md) for scopes and approval
+prefixes. Prefer these stable entry points over one-off Python/shell checks.
+
+For the legacy October Stride/Terra job only, retain the installed
+[`scripts/run_october_terra.sh`](scripts/run_october_terra.sh) for recovery,
+tests, service control, and Slack monitoring. See
+[`references/october-recovery.md`](references/october-recovery.md).
 
 Read [references/workflow.md](references/workflow.md) when preparing or executing
 a job. Use
@@ -27,8 +50,8 @@ stable command for resumable, size-validated S3 download planning and execution.
 It always runs the bundled downloader with the workspace virtualenv.
 Use
 [`scripts/run_frontier_annotation.sh`](scripts/run_frontier_annotation.sh) as
-the stable annotation command. Read-only commands never inject credentials.
-Billable annotation uses the locked `scripts/annotation_job.py` runner and
+the legacy/local-folder annotation command. Read-only commands never inject credentials.
+Its billable annotation uses the locked `scripts/annotation_job.py` runner and
 requires an explicitly selected credential source, profile, and endpoint.
 **Always ask the user which account/profile to use before a new billable run.**
 Never default to Stride, a personal profile, a previous job's account, or an
@@ -184,7 +207,7 @@ prevents duplicate finalizers; status is persisted in
 Use the stable wrapper rather than activating a shell manually:
 
 ```bash
-/home/ezekiel.flaton/.codex/skills/frontier-image-annotation/scripts/run_frontier_annotation.sh inspect \
+/home/ezekiel.flaton/.codex/skills/sku-category-analysis/scripts/run_frontier_annotation.sh inspect \
   --images /path/to/calibration/images \
   --config /path/to/job-config.yaml
 ```
@@ -193,7 +216,7 @@ After explicit approval for a calibration API run:
 
 ```bash
 # Replace placeholders only after asking the user which profile/account to use.
-/home/ezekiel.flaton/.codex/skills/frontier-image-annotation/scripts/run_frontier_annotation.sh annotate \
+/home/ezekiel.flaton/.codex/skills/sku-category-analysis/scripts/run_frontier_annotation.sh annotate \
   --images /path/to/calibration/images \
   --config /path/to/job-config.yaml \
   --credential-source agent-secrets \
@@ -208,7 +231,7 @@ After explicit approval for a calibration API run:
 Monitor without making API calls:
 
 ```bash
-/home/ezekiel.flaton/.codex/skills/frontier-image-annotation/scripts/run_frontier_annotation.sh status \
+/home/ezekiel.flaton/.codex/skills/sku-category-analysis/scripts/run_frontier_annotation.sh status \
   --images /path/to/images \
   --config /path/to/job-config.yaml
 ```
@@ -216,7 +239,7 @@ Monitor without making API calls:
 Compare the generated labels with hand labels:
 
 ```bash
-/home/ezekiel.flaton/.codex/skills/frontier-image-annotation/scripts/run_frontier_annotation.sh evaluate \
+/home/ezekiel.flaton/.codex/skills/sku-category-analysis/scripts/run_frontier_annotation.sh evaluate \
   --gold-labels /path/to/calibration/labels \
   --predicted-labels /path/to/generated/labels
 ```
@@ -233,7 +256,7 @@ directory:
 
 ```bash
 /home/ezekiel.flaton/devel/colcon_ws/src/.venv/bin/python \
-  /home/ezekiel.flaton/.codex/skills/frontier-image-annotation/scripts/build_review_gallery.py \
+  /home/ezekiel.flaton/.codex/skills/sku-category-analysis/scripts/build_review_gallery.py \
   --job-dir /path/to/job \
   --images-dir /path/to/job/images \
   --labels-dir /path/to/job/labels \
@@ -320,7 +343,7 @@ station and the user has explicitly approved the Atlas/log fallback, export
 durable artifacts with:
 
 ```bash
-/home/ezekiel.flaton/.codex/skills/frontier-image-annotation/scripts/run_export_res1_sku_images.sh \
+/home/ezekiel.flaton/.codex/skills/sku-category-analysis/scripts/run_export_res1_sku_images.sh \
   --date-from 2026-08-01 \
   --end-utc 2026-08-23T10:10:56Z \
   --output-dir /home/ezekiel.flaton/Downloads/pittston-res1-august-2026/pittston-res1-august-2026-sku-image-manifest \
@@ -358,7 +381,7 @@ config, and output directory. Obtain explicit approval for both the S3 reads and
 the billable annotation run.
 
 ```bash
-/home/ezekiel.flaton/.codex/skills/frontier-image-annotation/scripts/run_download_s3_images.sh \
+/home/ezekiel.flaton/.codex/skills/sku-category-analysis/scripts/run_download_s3_images.sh \
   plan \
   --input-csv /path/to/s3-paths.csv \
   --mapping-csv /path/to/mapping.csv \
@@ -368,7 +391,7 @@ the billable annotation run.
 Report the complete plan and obtain explicit approval. Then rerun with:
 
 ```bash
-/home/ezekiel.flaton/.codex/skills/frontier-image-annotation/scripts/run_download_s3_images.sh \
+/home/ezekiel.flaton/.codex/skills/sku-category-analysis/scripts/run_download_s3_images.sh \
   download \
   --input-csv /path/to/s3-paths.csv \
   --mapping-csv /path/to/mapping.csv \

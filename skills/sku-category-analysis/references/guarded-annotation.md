@@ -81,7 +81,7 @@ for review and retain human review as a separate quality gate.
 
 ```bash
 /home/ezekiel.flaton/devel/colcon_ws/src/.venv/bin/python \
-  /home/ezekiel.flaton/.codex/skills/frontier-image-annotation/scripts/build_review_package.py \
+  /home/ezekiel.flaton/.codex/skills/sku-category-analysis/scripts/build_review_package.py \
   --job-dir /path/to/job --labels-dir /path/to/job/images_labels_MODEL \
   --month 'Month YYYY' --sample-size 300 --seed 202609
 ```

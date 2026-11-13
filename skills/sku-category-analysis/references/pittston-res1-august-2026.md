@@ -59,7 +59,7 @@ the SKU source is a fallback and requires explicit user approval first.
 Monitor the annotation without API calls:
 
 ```bash
-/home/ezekiel.flaton/.codex/skills/frontier-image-annotation/scripts/run_frontier_annotation.sh status \
+/home/ezekiel.flaton/.codex/skills/sku-category-analysis/scripts/run_frontier_annotation.sh status \
   --images /home/ezekiel.flaton/Downloads/pittston-res1-august-2026/pittston-res1-august-2026-images \
   --config /home/ezekiel.flaton/devel/bg_ml_ws/bg_ml/experiments/robot_eligibility_classifier/configs/product_annotation.yaml
 ```
@@ -69,7 +69,7 @@ process while the label count or latest-label timestamp is advancing. If the
 job stopped, resume the exact approved job:
 
 ```bash
-/home/ezekiel.flaton/.codex/skills/frontier-image-annotation/scripts/run_frontier_annotation.sh annotate \
+/home/ezekiel.flaton/.codex/skills/sku-category-analysis/scripts/run_frontier_annotation.sh annotate \
   --images /home/ezekiel.flaton/Downloads/pittston-res1-august-2026/pittston-res1-august-2026-images \
   --config /home/ezekiel.flaton/devel/bg_ml_ws/bg_ml/experiments/robot_eligibility_classifier/configs/product_annotation.yaml \
   --workers 4 \
@@ -86,7 +86,7 @@ Regenerate the 500-image review sample and local browser gallery with:
 
 ```bash
 /home/ezekiel.flaton/devel/colcon_ws/src/.venv/bin/python \
-  /home/ezekiel.flaton/.codex/skills/frontier-image-annotation/scripts/build_review_gallery.py \
+  /home/ezekiel.flaton/.codex/skills/sku-category-analysis/scripts/build_review_gallery.py \
   --job-dir /home/ezekiel.flaton/Downloads/pittston-res1-august-2026 \
   --images-dir /home/ezekiel.flaton/Downloads/pittston-res1-august-2026/pittston-res1-august-2026-images \
   --labels-dir /home/ezekiel.flaton/Downloads/pittston-res1-august-2026/pittston-res1-august-2026-images_labels_gpt-5.6-sol \

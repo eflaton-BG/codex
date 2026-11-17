@@ -31,6 +31,14 @@ case "$action" in
     exec "$PYTHON" -B -m pytest -q -p no:cacheprovider \
       "$SCRIPT_DIR/test_resume_gateway.py" "$SCRIPT_DIR/test_resume_auth.py" \
       "$ROOT/tools/test_resume_api.py" "$ROOT/tools/test_slack_watch_retry_v2.py" ;;
+  watch-start)
+    if [[ $# -ne 1 || "$1" != "--approved-thread-updates" ]]; then exit 2; fi
+    exec /usr/bin/systemd-run --user --collect \
+      --unit=codex-pittston-terra-october-2026-slack-v3.service \
+      --property=Restart=no --property=TimeoutStopSec=60 \
+      "--property=StandardOutput=append:$ROOT/.job/slack/watch.log" \
+      "--property=StandardError=append:$ROOT/.job/slack/watch.log" \
+      "$SCRIPT_DIR/run_october_terra.sh" gateway-watch --approved-thread-updates ;;
   watch)
     if [[ $# -ne 1 || "$1" != "--approved-thread-updates" ]]; then exit 2; fi
     exec "$PYTHON" -B -u "$SCRIPT_DIR/slack_watch_auth_v3.py" ;;
